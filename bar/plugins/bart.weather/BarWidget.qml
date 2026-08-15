@@ -64,17 +64,17 @@ BarWidget {
     }
   }
 
-  BarIconButton {
+  // X1 tweak: icon + current temperature as a text label, rendered the way
+  // the clock renders (WidgetButton, Style.font.body, auto width) so the
+  // weather reads at exactly the clock's size. Vertical bars stay icon-only.
+  WidgetButton {
     id: button
     anchors.fill: parent
     bar: root.bar
-    // X1 tweak: show the current temperature next to the condition icon on
-    // horizontal bars, widening the slot the same way the power widget does
-    // for its percentage. Vertical bars stay icon-only.
     readonly property string tempText: panelLoader.item && !root.vertical && panelLoader.item.reportTempNum !== ""
       ? " " + panelLoader.item.reportTempNum + "°" : ""
     text: panelLoader.item ? panelLoader.item.label + tempText : ""
-    slotSize: tempText !== "" ? Style.bar.iconSlot * 2 : Style.bar.statusSlot
+    horizontalMargin: 8.75
     // Tooltip suppressed because the panel is the detail view.
     tooltipText: ""
 

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell.Io
+import qs.Commons
 
 // X1 resources cluster: a framed card holding CPU / RAM / temp / disk cells
 // with hairline separators. Under each value sits a small blurred glow bar
@@ -16,7 +17,9 @@ Item {
 
   property var stats: null
   readonly property var levelColors: stats && stats.colors ? stats.colors : ["#7fbf7f", "#d19a66", "#e06c75"]
-  readonly property color lineColor: bar ? bar.foreground : "white"
+  // barForeground (not foreground): the animated, transparency-aware color
+  // every stock widget uses — the card recolors with the bar.
+  readonly property color lineColor: bar ? bar.barForeground : "white"
 
   function setting(name, fallback) {
     var v = settings ? settings[name] : undefined
@@ -77,13 +80,13 @@ Item {
           text: cell.icon
           color: root.lineColor
           font.family: root.bar ? root.bar.fontFamily : "monospace"
-          font.pixelSize: root.setting("fontSize", 11)
+          font.pixelSize: root.setting("fontSize", Style.font.body)
         }
         Text {
           text: cell.value
           color: root.lineColor
           font.family: root.bar ? root.bar.fontFamily : "monospace"
-          font.pixelSize: root.setting("fontSize", 11)
+          font.pixelSize: root.setting("fontSize", Style.font.body)
         }
       }
 
@@ -126,18 +129,21 @@ Item {
     width: 1
     height: 14
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
-    color: Qt.alpha(root.lineColor, 0.14)
+    color: Qt.alpha(root.lineColor, 0.12)
   }
 
+  // Frame styled like the shell's own in-bar grouped rectangle (the drag
+  // ghost): controls-section fill/border tokens and the theme's Hyprland
+  // rounding, so every variant keeps its own corner identity.
   Rectangle {
     id: frame
     anchors.verticalCenter: parent.verticalCenter
-    implicitWidth: row.implicitWidth + 2 * root.setting("framePadding", 10)
-    height: parent.height - 4
-    radius: root.setting("radius", 7)
-    color: Qt.alpha(root.lineColor, 0.05)
-    border.width: 1
-    border.color: Qt.alpha(root.lineColor, 0.18)
+    implicitWidth: row.implicitWidth + 2 * root.setting("framePadding", Style.spacing.controlPaddingX)
+    height: parent.height - 2 * Style.space(1)
+    radius: Math.min(Style.cornerRadius, height / 2)
+    color: Style.normalFillFor(root.lineColor, root.lineColor)
+    border.width: Style.normalBorderWidth
+    border.color: Style.normalBorderFor(root.lineColor, root.lineColor)
 
     Row {
       id: row

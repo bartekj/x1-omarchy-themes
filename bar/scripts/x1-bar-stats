@@ -22,17 +22,49 @@ cpu=0
 read -r memp memu memt < <(awk '/^MemTotal:/{t=$2} /^MemAvailable:/{a=$2} END{
   u=t-a; printf "%d %.1f %.1f", int((100*u+t/2)/t), u/1048576, t/1048576}' /proc/meminfo)
 
-t=""
+# Temperature: mean of the per-core DTS sensors in millidegrees. The package
+# sensor swings 20°C+ on single-core boosts even at idle; the core mean is the
+# clean signal. Core numbering is sparse on hybrid CPUs, so enumerate by
+# temp*_label and guard every read (sysfs temp reads can fail with ENXIO).
+t="" sum=0 n=0
 for h in /sys/class/hwmon/hwmon*; do
-  [[ -r $h/name && $(<"$h/name") == coretemp && -r $h/temp1_input ]] && { t=$(<"$h/temp1_input"); break; }
+  [[ -r $h/name && $(<"$h/name") == coretemp ]] || continue
+  for lbl in "$h"/temp*_label; do
+    [[ -r $lbl && $(<"$lbl") == Core* ]] || continue
+    v=$(cat "${lbl%_label}_input" 2>/dev/null) || continue
+    sum=$((sum + v)) n=$((n + 1))
+  done
+  ((n == 0)) && [[ -r $h/temp1_input ]] && { t=$(cat "$h/temp1_input" 2>/dev/null || echo ""); }
+  break
 done
+((n > 0)) && t=$((sum / n))
 if [[ -z $t ]]; then
   for z in /sys/class/thermal/thermal_zone*; do
-    [[ -r $z/type && $(<"$z/type") == x86_pkg_temp ]] && { t=$(<"$z/temp"); break; }
+    [[ -r $z/type && $(<"$z/type") == x86_pkg_temp ]] && { t=$(cat "$z/temp" 2>/dev/null || echo ""); break; }
   done
 fi
+
+# Asymmetric EMA in millidegrees (fast up, slow down) so the bar tracks real
+# thermal events without flickering. State discarded when stale (resume from
+# suspend, shell restart) to avoid blending against an old value.
 temp=0
-[[ -n $t ]] && temp=$(((t + 500) / 1000))
+if [[ -n $t ]]; then
+  tstate="${XDG_RUNTIME_DIR:-/tmp}/x1-bar-temp.prev"
+  ema=$t
+  if [[ -r $tstate ]]; then
+    now=$(date +%s) mt=$(stat -c %Y "$tstate" 2>/dev/null || echo 0)
+    if ((now - mt <= 10)); then
+      prev=$(<"$tstate")
+      if ((t >= prev)); then
+        ema=$((prev + (t - prev) / 2))
+      else
+        ema=$((prev + (t - prev) / 5))
+      fi
+    fi
+  fi
+  printf '%s\n' "$ema" >"$tstate"
+  temp=$(((ema + 500) / 1000))
+fi
 
 read -r diskp disku diskt < <(df -P -BG / | awk 'NR==2{
   gsub("%","",$5); gsub("G","",$2); gsub("G","",$3); printf "%d %d %d", $5, $3, $2}')
@@ -49,6 +81,6 @@ crit=$(omarchy-theme-color bright_red '#e06c75')
 printf '{"cpu":{"v":%d,"l":%d},"mem":{"v":%d,"l":%d,"used":%s,"total":%s},"temp":{"v":%d,"l":%d},"disk":{"v":%d,"l":%d,"used":%s,"total":%s},"colors":["%s","%s","%s"]}\n' \
   "$cpu" "$(lvl "$cpu" 30 70)" \
   "$memp" "$(lvl "$memp" 50 80)" "$memu" "$memt" \
-  "$temp" "$(lvl "$temp" 55 75)" \
+  "$temp" "$(lvl "$temp" 55 78)" \
   "$diskp" "$(lvl "$diskp" 70 90)" "$disku" "$diskt" \
   "$ok" "$warn" "$crit"

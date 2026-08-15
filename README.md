@@ -94,12 +94,25 @@ Two routes:
 `bar/modules/x1-resources.qml` (installed to `~/.config/omarchy/bar/modules/`,
 shell.json entry `{"id": "x1-resources", "type": "qml"}`) renders the framed
 resource card: CPU / RAM / temp / disk cells with hairline separators and a
-small blurred glow under each value tinted by usage level. Data and level
-colors come from `bar/scripts/x1-bar-stats` (2s tick), which resolves
+small blurred glow under each value tinted by usage level. The frame reuses
+the shell's own tokens (`Style.normalFillFor/normalBorderFor`, radius =
+`Style.cornerRadius` → the variant's Hyprland rounding) and colors bind to
+`bar.barForeground`, so the card recolors in transparent-bar mode. Data and
+level colors come from `bar/scripts/x1-bar-stats` (2s tick), which resolves
 green/orange/red from the ACTIVE theme via `omarchy-theme-color
-green|orange|bright_red` — the module never hardcodes a palette. Thresholds
-(warn/crit): cpu 30/70, mem 50/80, temp 55/75 °C, disk 70/90 %. Click →
-btop; hover → detail tooltips via `bar.showTooltip`.
+green|orange|bright_red`. Temperature = mean of all coretemp `Core *`
+sensors (the package DTS swings 20°C+ on boost spikes) smoothed by an
+asymmetric EMA (fast up ½, slow down ⅕; millidegree state file with a 10s
+staleness guard for suspend/restart). Thresholds (warn/crit): cpu 30/70,
+mem 50/80, temp 55/78 °C, disk 70/90 %. Click → btop; hover → detail
+tooltips via `bar.showTooltip`.
+
+Bar transparency: the bar runs in the shell's native `"transparent": true`
+mode (no fill at all, wallpaper-contrast text) — toggled by double-clicking
+empty center bar space, which persists into shell.json. The palettes'
+`bar_alpha` (0.20-0.32) only matters in the filled mode; over a near-black
+wallpaper a tinted fill is imperceptible, which is why transparent mode is
+the default here.
 
 `bar/scripts/x1-theme-{status,next}` drive the bar theme switcher
 (`{"type": "command"}` module: click = next variant, right-click =
