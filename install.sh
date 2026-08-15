@@ -22,6 +22,19 @@ for src in build/*/; do
   echo "installed: $THEMES_DIR/$name"
 done
 
+# Bar cockpit: command-module scripts + the patched weather plugin clone.
+# shell.json itself is user config and is never touched by this installer.
+for script in bar/scripts/x1-*; do
+  install -Dm755 "$script" "$HOME/.config/omarchy/bar/scripts/$(basename "$script")"
+done
+echo "installed: ~/.config/omarchy/bar/scripts/ ($(basename -a bar/scripts/x1-* | paste -sd' '))"
+
+if [[ -d bar/plugins/bart.weather ]]; then
+  mkdir -p "$HOME/.config/omarchy/plugins"
+  rsync -a --delete bar/plugins/bart.weather/ "$HOME/.config/omarchy/plugins/bart.weather/"
+  echo "installed: ~/.config/omarchy/plugins/bart.weather (shell hot-reloads it)"
+fi
+
 # Pre-quattro leftover: this user-global template renders a dead waybar.css
 # into every theme set. Retire it once, keeping a backup.
 legacy_tpl="$HOME/.config/omarchy/themed/waybar.css.tpl"

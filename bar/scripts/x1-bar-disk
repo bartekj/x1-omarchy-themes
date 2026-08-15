@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Root filesystem usage for the quattro bar. >=92% (the old waybar critical
+# threshold) renders in the theme urgent color.
+set -u
+export LC_ALL=C
+
+df -P -BG / | awk 'NR==2{
+  gsub("%","",$5); p=$5+0; gsub("G","",$2); gsub("G","",$3)
+  k=(p>=92)?"active":""
+  printf "{\"text\":\" %2d%%\",\"tooltip\":\"/ %dG / %dG used (%d%%)\\nClick: btop\",\"class\":\"%s\"}\n", p, $3, $2, p, k
+}'

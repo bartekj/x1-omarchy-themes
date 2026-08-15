@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# X1 variant label for the quattro bar theme-switcher module.
+set -u
+export LC_ALL=C
+
+f="$HOME/.local/state/omarchy/current/theme.name"
+theme="x1"
+[[ -r $f ]] && theme="$(<"$f")"
+case "$theme" in
+x1) label="Carbon" ;;
+x1-stealth) label="Stealth" ;;
+x1-redline) label="Redline" ;;
+x1-graphite) label="Graphite" ;;
+*) label="$theme" ;;
+esac
+printf '{"text":"󰔎 %s","tooltip":"X1 theme: %s\\nClick: next variant\\nRight-click: theme menu"}\n' "$label" "$label"

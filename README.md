@@ -89,6 +89,35 @@ Two routes:
   per StatusNotifierItem id; new apps land in the auto-hiding drawer until
   pinned via the tray's manage popup.
 
+## Bar cockpit (Omarchy 4 shell)
+
+`bar/scripts/` holds command-module scripts installed to
+`~/.config/omarchy/bar/scripts/`: `x1-bar-{cpu,mem,temp,disk}` (compact
+resource pills, click → btop, waybar-style JSON output) and
+`x1-theme-{status,next}` (bar theme switcher: click = next variant,
+right-click = `omarchy-menu summon style.theme`). The matching shell.json
+entries live in `~/.config/omarchy/shell.json` (user config, NOT installed
+by install.sh) as `{"type": "command", "exec": ...}` modules.
+
+`bar/plugins/bart.weather/` is a patched clone of the built-in weather
+plugin (`omarchy plugin clone omarchy.weather`) that shows
+`icon + temperature` on the bar; the popup (3-day forecast, location
+picker) is untouched. The exact patch is `bar/plugins/weather-barwidget.diff`.
+**After an Omarchy upgrade changes the stock weather plugin:** delete the
+clone, re-clone, re-apply the diff, rsync back into the repo. Emergency
+rollback: `omarchy plugin disable bart.weather` restores the built-in.
+
+Cockpit gotchas:
+- Command modules re-exec ONLY on their interval — no click-refresh, no
+  signals. Plain-text output is trimmed; fixed width requires JSON with
+  padding inside `"text"`.
+- The only styling class is `"active"` (theme urgent color) — no
+  warning/critical tiers.
+- Editing QML of an already-loaded plugin hot-reloads the registry but the
+  QML component cache keeps the OLD code — run `omarchy-restart-shell` to
+  actually load QML changes. (`omarchy-refresh-shell` is a config RESET,
+  not a reload — it overwrites shell.json with the default.)
+
 ## Gotchas learned the hard way
 
 - Never ship a full `shell.toml` in a theme: the never-overwrite rule in

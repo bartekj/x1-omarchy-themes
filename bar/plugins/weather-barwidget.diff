@@ -1,0 +1,18 @@
+--- /usr/share/omarchy/shell/plugins/panels/weather/BarWidget.qml	2026-08-14 17:24:18.000000000 +0200
++++ bar/plugins/bart.weather/BarWidget.qml	2026-08-15 20:12:02.344079292 +0200
+@@ -68,8 +68,13 @@
+     id: button
+     anchors.fill: parent
+     bar: root.bar
+-    text: panelLoader.item ? panelLoader.item.label : ""
+-    slotSize: Style.bar.statusSlot
++    // X1 tweak: show the current temperature next to the condition icon on
++    // horizontal bars, widening the slot the same way the power widget does
++    // for its percentage. Vertical bars stay icon-only.
++    readonly property string tempText: panelLoader.item && !root.vertical && panelLoader.item.reportTempNum !== ""
++      ? " " + panelLoader.item.reportTempNum + "°" : ""
++    text: panelLoader.item ? panelLoader.item.label + tempText : ""
++    slotSize: tempText !== "" ? Style.bar.iconSlot * 2 : Style.bar.statusSlot
+     // Tooltip suppressed because the panel is the detail view.
+     tooltipText: ""
+ 

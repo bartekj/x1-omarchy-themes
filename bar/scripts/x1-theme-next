@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Cycle through the X1 theme family.
+set -euo pipefail
+
+themes=(x1 x1-stealth x1-redline x1-graphite)
+f="$HOME/.local/state/omarchy/current/theme.name"
+current="x1"
+[[ -r $f ]] && current="$(<"$f")"
+
+next="${themes[0]}"
+for i in "${!themes[@]}"; do
+  [[ ${themes[$i]} == "$current" ]] && next="${themes[$(((i + 1) % ${#themes[@]}))]}" && break
+done
+
+exec omarchy-theme-set "$next"
