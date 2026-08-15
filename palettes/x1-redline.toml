@@ -1,0 +1,62 @@
+# X1 Redline — TrackPoint-forward, clearer red accents, no heavy red borders.
+
+# identity / meta
+display_name = "X1 Redline"
+description = "TrackPoint-forward variant with clearer red accents, kept out of heavy borders."
+icons_theme = "Yaru-red"
+vscode_name = "Red"
+
+# colors.toml keys
+accent = "#d12736"
+cursor = "#f0f2f5"
+foreground = "#e1e4e8"
+background = "#090b0d"
+selection_foreground = "#f8f9fb"
+selection_background = "#383e46"
+
+color0 = "#090b0d"
+color1 = "#d12736"
+color2 = "#87a997"
+color3 = "#d39b67"
+color4 = "#648fb8"
+color5 = "#a988bd"
+color6 = "#6fa5a7"
+color7 = "#e1e4e8"
+color8 = "#383e46"
+color9 = "#f04f5d"
+color10 = "#a0c2b0"
+color11 = "#e1b073"
+color12 = "#8eb4d8"
+color13 = "#c8afd8"
+color14 = "#9cc3c4"
+color15 = "#f8f9fb"
+
+# surface ramp
+surface = "#15181c"
+surface_raised = "#21262c"
+surface_hover = "#2a3038"
+surface_active = "#232930"
+clock_bg = "#1a1f24"
+workspace_active = "#20262d"
+resource_bg = "#14181c"
+
+# lines & emphasis
+muted = "#969ea8"
+border = "#383e46"
+border_soft = "#424953"
+accent_dim = "#8f2631"
+border_gradient = "#648fb8"
+
+# semantic / resources
+warning = "#d39b67"
+healthy = "#87a997"
+critical = "#f04f5d"
+resource_cpu = "#8eb4d8"
+resource_memory = "#a0c2b0"
+resource_temp = "#e1b073"
+resource_disk = "#c8afd8"
+
+# background generation knobs
+bg_tint = "#d12736"
+weave_hi = "#21262c"
+weave_lo = "#090b0d"

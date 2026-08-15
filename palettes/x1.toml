@@ -1,0 +1,62 @@
+# X1 (Carbon) — matte graphite, functional TrackPoint-red accents.
+
+# identity / meta
+display_name = "X1"
+description = "Matte graphite with functional TrackPoint-red accents."
+icons_theme = "Yaru-red"
+vscode_name = "Default Dark Modern"
+
+# colors.toml keys
+accent = "#c21f30"
+cursor = "#e6e9ed"
+foreground = "#d9dde3"
+background = "#0b0d0f"
+selection_foreground = "#f6f7f9"
+selection_background = "#343a42"
+
+color0 = "#0b0d0f"
+color1 = "#c21f30"
+color2 = "#83a598"
+color3 = "#d19a66"
+color4 = "#5e8fbf"
+color5 = "#a78bba"
+color6 = "#6fa3a8"
+color7 = "#d9dde3"
+color8 = "#343a42"
+color9 = "#ef4f5f"
+color10 = "#9fc3b4"
+color11 = "#e2b27a"
+color12 = "#8eb6df"
+color13 = "#c6b0d7"
+color14 = "#9ac0c4"
+color15 = "#f6f7f9"
+
+# surface ramp
+surface = "#15191d"
+surface_raised = "#20262c"
+surface_hover = "#293039"
+surface_active = "#232a31"
+clock_bg = "#1b2026"
+workspace_active = "#20262c"
+resource_bg = "#15191d"
+
+# lines & emphasis
+muted = "#9199a3"
+border = "#343a42"
+border_soft = "#3b424b"
+accent_dim = "#7a232d"
+border_gradient = "#5e8fbf"
+
+# semantic / resources
+warning = "#d19a66"
+healthy = "#83a598"
+critical = "#ef4f5f"
+resource_cpu = "#8eb6df"
+resource_memory = "#9fc3b4"
+resource_temp = "#e2b27a"
+resource_disk = "#c6b0d7"
+
+# background generation knobs
+bg_tint = "#c21f30"
+weave_hi = "#20262c"
+weave_lo = "#0b0d0f"

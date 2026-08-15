@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+choice="$(
+  printf '%s\n' \
+    "X1" \
+    "X1 Stealth" \
+    "X1 Redline" \
+    "X1 Graphite" |
+    omarchy-launch-walker --dmenu --width 420 --minheight 1 --maxheight 280 -p "X1 theme..."
+)"
+
+[[ -n "${choice:-}" ]] || exit 0
+exec omarchy theme set "$choice"

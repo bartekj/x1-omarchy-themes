@@ -1,0 +1,62 @@
+# X1 Stealth — near-black, neutral accents, minimal red.
+
+# identity / meta
+display_name = "X1 Stealth"
+description = "Near-black variant with minimal color and neutral active states."
+icons_theme = "Yaru-sage"
+vscode_name = "Monokai Dimmed"
+
+# colors.toml keys
+accent = "#7d8792"
+cursor = "#dde2e8"
+foreground = "#d7dce2"
+background = "#07090b"
+selection_foreground = "#f4f6f8"
+selection_background = "#2a3036"
+
+color0 = "#07090b"
+color1 = "#9c2532"
+color2 = "#7f9f93"
+color3 = "#b99162"
+color4 = "#6f889e"
+color5 = "#8e839d"
+color6 = "#73979a"
+color7 = "#d7dce2"
+color8 = "#2a3036"
+color9 = "#c64550"
+color10 = "#93b3a7"
+color11 = "#caa876"
+color12 = "#91aabe"
+color13 = "#aaa0b8"
+color14 = "#91b2b5"
+color15 = "#f4f6f8"
+
+# surface ramp
+surface = "#111417"
+surface_raised = "#191e23"
+surface_hover = "#222830"
+surface_active = "#1b2026"
+clock_bg = "#151a1f"
+workspace_active = "#191e23"
+resource_bg = "#101316"
+
+# lines & emphasis
+muted = "#858e99"
+border = "#2a3036"
+border_soft = "#333a42"
+accent_dim = "#565f68"
+border_gradient = "#333a42"
+
+# semantic / resources
+warning = "#b99162"
+healthy = "#7f9f93"
+critical = "#c64550"
+resource_cpu = "#91aabe"
+resource_memory = "#93b3a7"
+resource_temp = "#caa876"
+resource_disk = "#aaa0b8"
+
+# background generation knobs
+bg_tint = "#7d8792"
+weave_hi = "#191e23"
+weave_lo = "#07090b"

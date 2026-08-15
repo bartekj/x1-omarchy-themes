@@ -1,0 +1,62 @@
+# X1 Graphite — brighter graphite surfaces for daylight readability.
+
+# identity / meta
+display_name = "X1 Graphite"
+description = "Brighter graphite surfaces tuned for daylight readability."
+icons_theme = "Yaru-wartybrown"
+vscode_name = "Default Dark+"
+
+# colors.toml keys
+accent = "#9a6a70"
+cursor = "#f0f3f5"
+foreground = "#e4e7ea"
+background = "#101214"
+selection_foreground = "#fafbfc"
+selection_background = "#424951"
+
+color0 = "#101214"
+color1 = "#b74a55"
+color2 = "#8fb0a0"
+color3 = "#c99a68"
+color4 = "#7fa0bf"
+color5 = "#ad99bd"
+color6 = "#7fa9aa"
+color7 = "#e4e7ea"
+color8 = "#424951"
+color9 = "#dc6470"
+color10 = "#a8c8b8"
+color11 = "#dfba83"
+color12 = "#a0c0dd"
+color13 = "#cbb7d9"
+color14 = "#a7cacc"
+color15 = "#fafbfc"
+
+# surface ramp
+surface = "#1c2024"
+surface_raised = "#272d33"
+surface_hover = "#313840"
+surface_active = "#2a3036"
+clock_bg = "#22272d"
+workspace_active = "#272d33"
+resource_bg = "#1b2024"
+
+# lines & emphasis
+muted = "#a2aab3"
+border = "#424951"
+border_soft = "#4c545e"
+accent_dim = "#7b555a"
+border_gradient = "#7fa0bf"
+
+# semantic / resources
+warning = "#c99a68"
+healthy = "#8fb0a0"
+critical = "#dc6470"
+resource_cpu = "#a0c0dd"
+resource_memory = "#a8c8b8"
+resource_temp = "#dfba83"
+resource_disk = "#cbb7d9"
+
+# background generation knobs
+bg_tint = "#9a6a70"
+weave_hi = "#272d33"
+weave_lo = "#101214"
