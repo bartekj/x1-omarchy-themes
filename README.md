@@ -32,6 +32,17 @@ omarchy theme set x1-stealth   # or x1 / x1-redline / x1-graphite
 Never edit `~/.config/omarchy/themes/x1*` by hand — edit a palette (or a
 template) here and rebuild. `omarchy-theme-refresh` is the fast dev loop.
 
+## Custom wallpapers
+
+Two routes:
+
+- **Route A (no rebuild):** drop images into
+  `~/.config/omarchy/backgrounds/<variant>/` — Omarchy cycles them natively,
+  sorted before the theme's own backgrounds.
+- **Route B (versioned):** drop images into `assets/backgrounds/<variant>/`
+  (or `assets/backgrounds/all/` for every variant). `./build.sh` then ships
+  them **instead of** the generated carbon-weave/heritage set.
+
 ## Token contract
 
 - The 22 `colors.toml` keys (accent, cursor, foreground, background,

@@ -20,6 +20,8 @@ REQUIRED_KEYS=(
   warning healthy critical
   resource_cpu resource_memory resource_temp resource_disk
   bg_tint weave_hi weave_lo
+  pill_radius btn_radius bar_alpha pill_alpha pill_border_alpha ws_alpha
+  hypr_rounding hypr_gaps_in hypr_gaps_out hypr_border_size
 )
 
 die() {
@@ -33,13 +35,12 @@ hex_to_rgb() {
   printf "%d,%d,%d" "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
 }
 
-generate_assets() {
+generate_weave() {
   local out="$1"
-  local accent="${P[accent]}" background="${P[background]}" foreground="${P[foreground]}"
   local bg_tint="${P[bg_tint]}" weave_hi="${P[weave_hi]}" weave_lo="${P[weave_lo]}"
 
-  # 1) Procedural carbon-fiber weave: interleaved vertical/horizontal gradient
-  #    tiles, faint noise, vignette, and a whisper of the variant tint.
+  # Procedural carbon-fiber weave: interleaved vertical/horizontal gradient
+  # tiles, faint noise, vignette, and a whisper of the variant tint.
   magick \
     \( -size 24x48 gradient:"${weave_hi}"-"${weave_lo}" \) \
     \( -size 48x24 gradient:"${weave_hi}"-"${weave_lo}" -rotate 90 \) \
@@ -51,22 +52,57 @@ generate_assets() {
     \( -size 2560x1600 xc:"${bg_tint}" -alpha set -channel A -evaluate set 4% +channel \) \
     -compose over -composite \
     "$out/backgrounds/1-carbon-weave.png"
+}
 
-  # 2) Heritage: the shared original wallpaper, rescaled and tinted per variant.
+generate_heritage() {
+  local out="$1"
+  local bg_tint="${P[bg_tint]}"
+
+  # Heritage: the shared original wallpaper, rescaled and tinted per variant.
   magick assets/source/BG1.png \
     -resize 2560x1600^ -gravity center -extent 2560x1600 \
     -modulate 100,85 \
     \( +clone -fill "${bg_tint}" -colorize 100 \) \
     -compose blend -define compose:args=12x88 -composite \
     "$out/backgrounds/2-heritage.png"
+}
 
-  # 3) Picker preview: weave thumbnail + accent stripe + 16-swatch ANSI strip.
+populate_backgrounds() {
+  local name="$1" out="$2" dir copied=0
+
+  # User wallpapers win: anything in assets/backgrounds/<variant>/ or
+  # assets/backgrounds/all/ ships as-is INSTEAD of the generated set.
+  for dir in "assets/backgrounds/$name" "assets/backgrounds/all"; do
+    if compgen -G "$dir/*" >/dev/null; then
+      cp -- "$dir"/* "$out/backgrounds/"
+      copied=1
+    fi
+  done
+
+  if ((!copied)); then
+    generate_weave "$out"
+    generate_heritage "$out"
+  fi
+}
+
+generate_assets() {
+  local name="$1" out="$2"
+  local accent="${P[accent]}" background="${P[background]}" foreground="${P[foreground]}"
+
+  populate_backgrounds "$name" "$out"
+
+  # Picker preview: first background (sort order = what omarchy shows first)
+  # + accent stripe + 16-swatch ANSI strip.
+  local first_bg
+  first_bg=$(find "$out/backgrounds" -maxdepth 1 -type f | sort | head -1)
+  [[ -n "$first_bg" ]] || die "$name: no backgrounds produced"
+
   local swatches=()
   for i in $(seq 0 15); do
     swatches+=(\( -size 50x52 xc:"${P[color$i]}" \))
   done
   magick \
-    \( "$out/backgrounds/1-carbon-weave.png" -resize 800x420^ -gravity center -extent 800x420 \) \
+    \( "$first_bg" -resize 800x420^ -gravity center -extent 800x420 \) \
     \( -size 800x8 xc:"${accent}" \) \
     \( "${swatches[@]}" +append \) \
     -append "$out/preview.png"
@@ -119,7 +155,7 @@ for palette in palettes/*.toml; do
   done
   rm "$sed_script"
 
-  generate_assets "$out"
+  generate_assets "$name" "$out"
 
   # Guard: no unresolved {{ placeholders }} may survive (text files only)
   if leftovers=$(grep -rIn '{{' "$out"); then

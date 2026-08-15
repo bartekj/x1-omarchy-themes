@@ -20,3 +20,47 @@
 @define-color resource-temp {{ resource_temp }};
 @define-color resource-disk {{ resource_disk }};
 @define-color transparent rgba(0, 0, 0, 0);
+
+/* ---- shapes & transparency: per-variant identity -------------------- */
+/* These declarations were REMOVED from ~/.config/waybar/style.css.      */
+/* style.css is imported after this file — a duplicate there wins.       */
+
+window#waybar > box {
+  background: alpha(@background, {{ bar_alpha }});
+  border-bottom: 1px solid alpha(@border-soft, 0.8);
+  box-shadow: 0 5px 16px alpha(#000000, 0.42);
+}
+
+#launcher,
+#indicators,
+#theme,
+#connectivity,
+#resources,
+#power,
+#tray,
+#mpris,
+#privacy {
+  background: alpha(@surface, {{ pill_alpha }});
+  border: 1px solid alpha(@border-soft, {{ pill_border_alpha }});
+  border-radius: {{ pill_radius }}px;
+}
+
+/* must follow the pill rule: same specificity, later wins */
+#resources {
+  background: alpha(@resource-bg, {{ pill_alpha }});
+}
+
+#workspaces {
+  background: alpha(@surface, {{ ws_alpha }});
+  border: 1px solid alpha(@border-soft, {{ pill_border_alpha }});
+  border-radius: {{ pill_radius }}px;
+}
+
+#workspaces button {
+  border-radius: {{ btn_radius }}px;
+}
+
+#clock {
+  border: 1px solid alpha(@border-soft, {{ pill_border_alpha }});
+  border-radius: {{ pill_radius }}px;
+}
