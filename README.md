@@ -91,21 +91,29 @@ Two routes:
 
 ## Bar cockpit (Omarchy 4 shell)
 
-`bar/modules/x1-resources.qml` (installed to `~/.config/omarchy/bar/modules/`,
-shell.json entry `{"id": "x1-resources", "type": "qml"}`) renders the framed
-resource card: CPU / RAM / temp / disk cells with hairline separators and a
-small blurred glow under each value tinted by usage level. The frame reuses
-the shell's own tokens (`Style.normalFillFor/normalBorderFor`, radius =
-`Style.cornerRadius` → the variant's Hyprland rounding) and colors bind to
-`bar.barForeground`, so the card recolors in transparent-bar mode. Data and
-level colors come from `bar/scripts/x1-bar-stats` (2s tick), which resolves
-green/orange/red from the ACTIVE theme via `omarchy-theme-color
-green|orange|bright_red`. Temperature = mean of all coretemp `Core *`
-sensors (the package DTS swings 20°C+ on boost spikes) smoothed by an
-asymmetric EMA (fast up ½, slow down ⅕; millidegree state file with a 10s
-staleness guard for suspend/restart). Thresholds (warn/crit): cpu 30/70,
-mem 50/80, temp 55/78 °C, disk 70/90 %. Click → btop; hover → detail
-tooltips via `bar.showTooltip`.
+`bar/plugins/bart.resources/` is a full third-party shell plugin (installed
+to `~/.config/omarchy/plugins/bart.resources/`, shell.json entry
+`{"id": "bart.resources"}` — no `"type"` key, that would bypass the plugin
+registry). It renders the framed resource card: CPU / RAM / temp / disk
+cells with hairline separators, each ICON tinted green/orange/red by usage
+level (values stay in the bar foreground; no height changes). The frame
+reuses the shell's own tokens (`Style.normalFillFor/normalBorderFor`,
+radius = `Style.cornerRadius` → the variant's Hyprland rounding) and binds
+to `bar.barForeground`, so it recolors in transparent-bar mode.
+**Left click opens a native KeyboardPanel popup** (like Wi-Fi/volume):
+Processor (usage meter, temperature, load average), Memory (RAM + swap
+meters, used/total), Disk /, uptime, and a btop button. Right click on the
+card jumps straight to btop. IPC: `omarchy-shell bart.resources
+open|close|toggle`. Data and level colors come from
+`bar/scripts/x1-bar-stats` (2s tick, always on — the panel adds no polling),
+which resolves green/orange/red from the ACTIVE theme via
+`omarchy-theme-color green|orange|bright_red`. Temperature = mean of all
+coretemp `Core *` sensors (the package DTS swings 20°C+ on boost spikes)
+smoothed by an asymmetric EMA (fast up ½, slow down ⅕; millidegree state
+file with a 10s staleness guard). Thresholds (warn/crit): cpu 30/70, mem
+50/80, temp 55/78 °C, disk 70/90 %. Plugin QML hot-reloads on save
+(inotify + component cache clear) — unlike `bar/modules`, no shell restart
+needed.
 
 Bar transparency: the bar runs in the shell's native `"transparent": true`
 mode (no fill at all, wallpaper-contrast text) — toggled by double-clicking

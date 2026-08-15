@@ -1,19 +1,17 @@
 import QtQuick
-import QtQuick.Effects
 import Quickshell.Io
 import qs.Commons
+import qs.Ui
 
 // X1 resources cluster: a framed card holding CPU / RAM / temp / disk cells
-// with hairline separators. Under each value sits a small blurred glow bar
-// tinted by usage level; values, levels, and the level colors all come from
-// x1-bar-stats so the palette always follows the active theme.
+// with hairline separators. Each icon is tinted by its usage level; values,
+// levels, and the level colors all come from x1-bar-stats so the palette
+// always follows the active theme. Left click opens the detail panel,
+// right click jumps straight to btop.
 
-Item {
+BarWidget {
   id: root
-
-  property var bar
-  property string moduleName
-  property var settings
+  moduleName: "bart.resources"
 
   property var stats: null
   readonly property var levelColors: stats && stats.colors ? stats.colors : ["#7fbf7f", "#d19a66", "#e06c75"]
@@ -21,17 +19,48 @@ Item {
   // every stock widget uses — the card recolors with the bar.
   readonly property color lineColor: bar ? bar.barForeground : "white"
 
-  function setting(name, fallback) {
-    var v = settings ? settings[name] : undefined
-    return v === undefined || v === null ? fallback : v
-  }
-
   function pad(v, w) {
     return String(v).padStart(w, " ")
   }
 
-  implicitHeight: bar ? bar.barSize : 26
+  function injectPanel() {
+    var target = panelLoader.item
+    if (!target) return
+    if ("bar" in target) target.bar = root.bar
+    if ("settings" in target) target.settings = root.settings
+    if ("anchorItem" in target) target.anchorItem = frame
+    if ("hostWidget" in target) target.hostWidget = root
+  }
+
+  function togglePanel() {
+    if (panelLoader.item && panelLoader.item.toggle) panelLoader.item.toggle()
+  }
+
+  // Shape contract for the bar's popout coordinator and shell.summon routing:
+  // the bar identifies a panel by the widget mounted in its slot, so this
+  // root forwards the panel's open/close surface.
+  readonly property bool opened: panelLoader.item ? panelLoader.item.opened === true : false
+
+  function open() {
+    if (panelLoader.item && panelLoader.item.open) panelLoader.item.open()
+  }
+
+  function close() {
+    if (panelLoader.item && panelLoader.item.close) panelLoader.item.close()
+  }
+
+  readonly property bool popoutSwitchClosing: panelLoader.item ? panelLoader.item.popoutSwitchClosing === true : false
+
+  function closeForPopoutSwitch() {
+    if (panelLoader.item) panelLoader.item.closeForPopoutSwitch()
+  }
+
+  visible: true
   implicitWidth: frame.implicitWidth
+  implicitHeight: barSize
+
+  onBarChanged: injectPanel()
+  onSettingsChanged: injectPanel()
 
   Process {
     id: statsProc
@@ -49,11 +78,22 @@ Item {
   }
 
   Timer {
-    interval: 2000
+    interval: Math.max(1, Number(root.setting("intervalSec", 2))) * 1000
     running: true
     repeat: true
     triggeredOnStart: true
     onTriggered: if (!statsProc.running) statsProc.running = true
+  }
+
+  Loader {
+    id: panelLoader
+    active: true
+    source: Qt.resolvedUrl("Panel.qml")
+    visible: false
+    onLoaded: {
+      root.injectPanel()
+      Qt.callLater(root.injectPanel)
+    }
   }
 
   component ResourceCell: Item {
@@ -62,65 +102,30 @@ Item {
     property string icon
     property string value
     property int level: 0
-    property string tip: ""
 
-    implicitWidth: column.implicitWidth
-    implicitHeight: column.implicitHeight
+    implicitWidth: textRow.implicitWidth
+    implicitHeight: textRow.implicitHeight
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
 
-    Column {
-      id: column
-      spacing: 2
+    Row {
+      id: textRow
+      spacing: 4
 
-      Row {
-        id: textRow
-        spacing: 4
+      Text {
+        text: cell.icon
+        color: root.levelColors[Math.min(cell.level, 2)]
+        font.family: root.bar ? root.bar.fontFamily : "monospace"
+        font.pixelSize: root.setting("fontSize", Style.font.body)
 
-        Text {
-          text: cell.icon
-          color: root.lineColor
-          font.family: root.bar ? root.bar.fontFamily : "monospace"
-          font.pixelSize: root.setting("fontSize", Style.font.body)
-        }
-        Text {
-          text: cell.value
-          color: root.lineColor
-          font.family: root.bar ? root.bar.fontFamily : "monospace"
-          font.pixelSize: root.setting("fontSize", Style.font.body)
+        Behavior on color {
+          ColorAnimation { duration: 160 }
         }
       }
-
-      Item {
-        width: textRow.width
-        height: 3
-
-        Rectangle {
-          id: glowCore
-          anchors.horizontalCenter: parent.horizontalCenter
-          anchors.verticalCenter: parent.verticalCenter
-          width: Math.min(textRow.width - 2, 24)
-          height: 2
-          radius: 1
-          color: root.levelColors[Math.min(cell.level, 2)]
-        }
-
-        MultiEffect {
-          source: glowCore
-          anchors.fill: glowCore
-          blurEnabled: true
-          blur: 1.0
-          blurMax: 12
-          autoPaddingEnabled: true
-          opacity: 0.85
-        }
-      }
-    }
-
-    HoverHandler {
-      onHoveredChanged: {
-        if (!root.bar) return
-        if (hovered) root.bar.showTooltip(cell, cell.tip)
-        else root.bar.hideTooltip(cell)
+      Text {
+        text: cell.value
+        color: root.lineColor
+        font.family: root.bar ? root.bar.fontFamily : "monospace"
+        font.pixelSize: root.setting("fontSize", Style.font.body)
       }
     }
   }
@@ -155,34 +160,37 @@ Item {
         icon: ""
         value: root.stats ? root.pad(root.stats.cpu.v, 3) + "%" : "  -%"
         level: root.stats ? root.stats.cpu.l : 0
-        tip: root.stats ? "CPU " + root.stats.cpu.v + "%\nClick: btop" : ""
       }
       CellSeparator {}
       ResourceCell {
         icon: ""
         value: root.stats ? root.pad(root.stats.mem.v, 3) + "%" : "  -%"
         level: root.stats ? root.stats.mem.l : 0
-        tip: root.stats ? "RAM " + root.stats.mem.used + "G / " + root.stats.mem.total + "G (" + root.stats.mem.v + "%)\nClick: btop" : ""
       }
       CellSeparator {}
       ResourceCell {
         icon: ""
         value: root.stats ? root.pad(root.stats.temp.v, 2) + "°" : " -°"
         level: root.stats ? root.stats.temp.l : 0
-        tip: root.stats ? "CPU package " + root.stats.temp.v + "°C\nClick: btop" : ""
       }
       CellSeparator {}
       ResourceCell {
         icon: ""
         value: root.stats ? root.pad(root.stats.disk.v, 2) + "%" : " -%"
         level: root.stats ? root.stats.disk.l : 0
-        tip: root.stats ? "/ " + root.stats.disk.used + "G / " + root.stats.disk.total + "G (" + root.stats.disk.v + "%)\nClick: btop" : ""
       }
     }
 
     MouseArea {
       anchors.fill: parent
-      onClicked: if (root.bar) root.bar.run("omarchy-launch-or-focus-tui btop")
+      acceptedButtons: Qt.LeftButton | Qt.RightButton
+      onClicked: function(mouse) {
+        if (mouse.button === Qt.RightButton) {
+          if (root.bar) root.bar.run("omarchy-launch-or-focus-tui btop")
+        } else {
+          root.togglePanel()
+        }
+      }
     }
   }
 }
