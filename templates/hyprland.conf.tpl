@@ -29,3 +29,8 @@ decoration {
         passes = 2
     }
 }
+
+# Terminals: deeper translucency than the Omarchy default (0.985/0.96).
+# Omarchy tags terminals in default/hypr/apps/terminals.conf; this theme file
+# is sourced after it, so this later rule wins for the same property.
+windowrule = opacity 0.96 0.91, match:tag terminal

@@ -3,7 +3,7 @@
 # Install the built X1 theme family into the live Omarchy config:
 #   build/<variant>/            -> ~/.config/omarchy/themes/<variant>/
 #   waybar/waybar.css.tpl       -> ~/.config/omarchy/themed/waybar.css.tpl
-#   waybar/x1-theme-*           -> ~/.config/waybar/scripts/
+#   waybar/x1-*                 -> ~/.config/waybar/scripts/
 #
 # Run ./build.sh first. Apply afterwards with: omarchy theme set <variant>
 
@@ -31,7 +31,7 @@ install -m 644 waybar/waybar.css.tpl "$THEMED_DIR/waybar.css.tpl"
 echo "installed: $THEMED_DIR/waybar.css.tpl"
 
 mkdir -p "$SCRIPTS_DIR"
-install -m 755 waybar/x1-theme-status waybar/x1-theme-next waybar/x1-theme-select "$SCRIPTS_DIR/"
-echo "installed: $SCRIPTS_DIR/x1-theme-{status,next,select}"
+install -m 755 waybar/x1-* "$SCRIPTS_DIR/"
+echo "installed: $SCRIPTS_DIR/ ($(basename -a waybar/x1-* | paste -sd' '))"
 
 echo "OK — apply with: omarchy theme set x1-stealth (or x1 / x1-redline / x1-graphite)"

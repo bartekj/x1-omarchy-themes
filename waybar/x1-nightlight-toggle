@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Toggle night light via hyprsunset IPC directly. Unlike
+# omarchy-toggle-nightlight, this never restarts waybar — the module is
+# refreshed instantly via SIGRTMIN+11 (custom/nightlight has "signal": 11).
+
+ON_TEMP=4000
+OFF_TEMP=6000
+
+# Daemon fallback (autostart normally has it running).
+if ! hyprctl hyprsunset temperature >/dev/null 2>&1; then
+  setsid uwsm-app -- hyprsunset >/dev/null 2>&1 &
+  for _ in $(seq 1 20); do
+    hyprctl hyprsunset temperature >/dev/null 2>&1 && break
+    sleep 0.1
+  done
+fi
+
+# hyprctl prints connection errors to STDOUT (exit 3) — only a bare number
+# on exit 0 counts as a real temperature.
+current="$(hyprctl hyprsunset temperature 2>/dev/null)" || current=""
+current="${current//[^0-9]/}"
+[[ "$current" =~ ^[0-9]{3,5}$ ]] || current=""
+
+if [[ -n "$current" && "$current" -lt 5000 ]]; then
+  hyprctl hyprsunset temperature "$OFF_TEMP" >/dev/null
+  notify-send -u low "󰖨  Daylight screen temperature"
+else
+  hyprctl hyprsunset temperature "$ON_TEMP" >/dev/null
+  notify-send -u low "󰖔  Nightlight screen temperature"
+fi
+
+pkill -RTMIN+11 waybar 2>/dev/null || true
