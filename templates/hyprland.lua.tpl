@@ -28,7 +28,7 @@ hl.config({
 })
 
 -- Bar glass: blur the translucent omarchy-shell bar layer.
-hl.layer_rule({ match = { namespace = "omarchy-bar" }, blur = true, ignore_alpha = 0.3 })
+hl.layer_rule({ match = { namespace = "omarchy-bar" }, blur = true, ignore_alpha = 0.1 })
 
 -- Terminals: frosted glass, deeper than the Omarchy default.
 o.window({ tag = "terminal" }, { opacity = "0.90 0.82" })

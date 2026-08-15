@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-# RAM % for the quattro bar (MemTotal - MemAvailable).
-set -u
-export LC_ALL=C
-
-awk '/^MemTotal:/{t=$2} /^MemAvailable:/{a=$2} END{
-  u=t-a; p=int((100*u+t/2)/t)
-  printf "{\"text\":\" %3d%%\",\"tooltip\":\"RAM %.1fG / %.1fG (%d%%)\\nClick: btop\"}\n", p, u/1048576, t/1048576, p
-}' /proc/meminfo

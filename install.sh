@@ -29,6 +29,11 @@ for script in bar/scripts/x1-*; do
 done
 echo "installed: ~/.config/omarchy/bar/scripts/ ($(basename -a bar/scripts/x1-* | paste -sd' '))"
 
+for module in bar/modules/*.qml; do
+  install -Dm644 "$module" "$HOME/.config/omarchy/bar/modules/$(basename "$module")"
+done
+echo "installed: ~/.config/omarchy/bar/modules/ ($(basename -a bar/modules/*.qml | paste -sd' ')) — QML changes need omarchy-restart-shell"
+
 if [[ -d bar/plugins/bart.weather ]]; then
   mkdir -p "$HOME/.config/omarchy/plugins"
   rsync -a --delete bar/plugins/bart.weather/ "$HOME/.config/omarchy/plugins/bart.weather/"

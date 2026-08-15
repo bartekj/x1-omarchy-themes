@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Aggregate resource stats for the x1-resources QML bar module: one JSON
+# object with cpu/mem/temp/disk values, usage levels (0 ok / 1 warn /
+# 2 crit), and the current theme's threshold colors so the module never
+# hardcodes a palette.
+set -u
+export LC_ALL=C
+
+state="${XDG_RUNTIME_DIR:-/tmp}/x1-bar-cpu.prev"
+read -r _ user nice system idle iowait irq softirq steal _ </proc/stat
+total=$((user + nice + system + idle + iowait + irq + softirq + steal))
+idle_all=$((idle + iowait))
+pt=0 pi=0
+[[ -r $state ]] && read -r pt pi <"$state"
+printf '%s %s\n' "$total" "$idle_all" >"$state"
+dt=$((total - pt)) di=$((idle_all - pi))
+cpu=0
+((dt > 0)) && cpu=$(((100 * (dt - di) + dt / 2) / dt))
+((cpu > 100)) && cpu=100
+((cpu < 0)) && cpu=0
+
+read -r memp memu memt < <(awk '/^MemTotal:/{t=$2} /^MemAvailable:/{a=$2} END{
+  u=t-a; printf "%d %.1f %.1f", int((100*u+t/2)/t), u/1048576, t/1048576}' /proc/meminfo)
+
+t=""
+for h in /sys/class/hwmon/hwmon*; do
+  [[ -r $h/name && $(<"$h/name") == coretemp && -r $h/temp1_input ]] && { t=$(<"$h/temp1_input"); break; }
+done
+if [[ -z $t ]]; then
+  for z in /sys/class/thermal/thermal_zone*; do
+    [[ -r $z/type && $(<"$z/type") == x86_pkg_temp ]] && { t=$(<"$z/temp"); break; }
+  done
+fi
+temp=0
+[[ -n $t ]] && temp=$(((t + 500) / 1000))
+
+read -r diskp disku diskt < <(df -P -BG / | awk 'NR==2{
+  gsub("%","",$5); gsub("G","",$2); gsub("G","",$3); printf "%d %d %d", $5, $3, $2}')
+
+lvl() {
+  local v=$1 warn=$2 crit=$3
+  if ((v >= crit)); then echo 2; elif ((v >= warn)); then echo 1; else echo 0; fi
+}
+
+ok=$(omarchy-theme-color green '#7fbf7f')
+warn=$(omarchy-theme-color orange '#d19a66')
+crit=$(omarchy-theme-color bright_red '#e06c75')
+
+printf '{"cpu":{"v":%d,"l":%d},"mem":{"v":%d,"l":%d,"used":%s,"total":%s},"temp":{"v":%d,"l":%d},"disk":{"v":%d,"l":%d,"used":%s,"total":%s},"colors":["%s","%s","%s"]}\n' \
+  "$cpu" "$(lvl "$cpu" 30 70)" \
+  "$memp" "$(lvl "$memp" 50 80)" "$memu" "$memt" \
+  "$temp" "$(lvl "$temp" 55 75)" \
+  "$diskp" "$(lvl "$diskp" 70 90)" "$disku" "$diskt" \
+  "$ok" "$warn" "$crit"

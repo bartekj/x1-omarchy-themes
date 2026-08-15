@@ -51,7 +51,7 @@ weave_hi = "#191e23"
 weave_lo = "#07090b"
 
 # shape & glass identity
-bar_alpha = "0.50"
+bar_alpha = "0.20"
 pill_alpha = "0.82"
 pill_border_alpha = "0.75"
 hypr_rounding = "1"

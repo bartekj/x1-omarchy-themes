@@ -91,13 +91,20 @@ Two routes:
 
 ## Bar cockpit (Omarchy 4 shell)
 
-`bar/scripts/` holds command-module scripts installed to
-`~/.config/omarchy/bar/scripts/`: `x1-bar-{cpu,mem,temp,disk}` (compact
-resource pills, click → btop, waybar-style JSON output) and
-`x1-theme-{status,next}` (bar theme switcher: click = next variant,
-right-click = `omarchy-menu summon style.theme`). The matching shell.json
-entries live in `~/.config/omarchy/shell.json` (user config, NOT installed
-by install.sh) as `{"type": "command", "exec": ...}` modules.
+`bar/modules/x1-resources.qml` (installed to `~/.config/omarchy/bar/modules/`,
+shell.json entry `{"id": "x1-resources", "type": "qml"}`) renders the framed
+resource card: CPU / RAM / temp / disk cells with hairline separators and a
+small blurred glow under each value tinted by usage level. Data and level
+colors come from `bar/scripts/x1-bar-stats` (2s tick), which resolves
+green/orange/red from the ACTIVE theme via `omarchy-theme-color
+green|orange|bright_red` — the module never hardcodes a palette. Thresholds
+(warn/crit): cpu 30/70, mem 50/80, temp 55/75 °C, disk 70/90 %. Click →
+btop; hover → detail tooltips via `bar.showTooltip`.
+
+`bar/scripts/x1-theme-{status,next}` drive the bar theme switcher
+(`{"type": "command"}` module: click = next variant, right-click =
+`omarchy-menu summon style.theme`). The shell.json entries live in
+`~/.config/omarchy/shell.json` (user config, NOT installed by install.sh).
 
 `bar/plugins/bart.weather/` is a patched clone of the built-in weather
 plugin (`omarchy plugin clone omarchy.weather`) that shows
