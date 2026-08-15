@@ -1,6 +1,0 @@
-$color = rgba({{ background_rgb }}, 1.0)
-$inner_color = rgba({{ surface_rgb }}, 0.92)
-$outer_color = rgba({{ accent_rgb }}, 1.0)
-$font_color = rgba({{ foreground_rgb }}, 1.0)
-$placeholder_color = rgba({{ muted_rgb }}, 0.9)
-$check_color = rgba({{ accent_rgb }}, 1.0)

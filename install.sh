@@ -1,9 +1,7 @@
 #!/bin/bash
 #
-# Install the built X1 theme family into the live Omarchy config:
-#   build/<variant>/            -> ~/.config/omarchy/themes/<variant>/
-#   waybar/waybar.css.tpl       -> ~/.config/omarchy/themed/waybar.css.tpl
-#   waybar/x1-*                 -> ~/.config/waybar/scripts/
+# Install the built X1 theme family into the live Omarchy (4.x) config:
+#   build/<variant>/ -> ~/.config/omarchy/themes/<variant>/
 #
 # Run ./build.sh first. Apply afterwards with: omarchy theme set <variant>
 
@@ -11,8 +9,6 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 THEMES_DIR="$HOME/.config/omarchy/themes"
-THEMED_DIR="$HOME/.config/omarchy/themed"
-SCRIPTS_DIR="$HOME/.config/waybar/scripts"
 
 compgen -G 'build/*/colors.toml' >/dev/null || {
   echo "install.sh: ERROR: nothing built — run ./build.sh first" >&2
@@ -26,12 +22,21 @@ for src in build/*/; do
   echo "installed: $THEMES_DIR/$name"
 done
 
-mkdir -p "$THEMED_DIR"
-install -m 644 waybar/waybar.css.tpl "$THEMED_DIR/waybar.css.tpl"
-echo "installed: $THEMED_DIR/waybar.css.tpl"
+# Pre-quattro leftover: this user-global template renders a dead waybar.css
+# into every theme set. Retire it once, keeping a backup.
+legacy_tpl="$HOME/.config/omarchy/themed/waybar.css.tpl"
+if [[ -f $legacy_tpl ]]; then
+  mv "$legacy_tpl" "$legacy_tpl.pre-quattro.bak"
+  echo "retired: $legacy_tpl -> $legacy_tpl.pre-quattro.bak"
+fi
 
-mkdir -p "$SCRIPTS_DIR"
-install -m 755 waybar/x1-* "$SCRIPTS_DIR/"
-echo "installed: $SCRIPTS_DIR/ ($(basename -a waybar/x1-* | paste -sd' '))"
-
-echo "OK — apply with: omarchy theme set x1-stealth (or x1 / x1-redline / x1-graphite)"
+current=$(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null || true)
+case $current in
+x1 | x1-graphite | x1-redline | x1-stealth)
+  omarchy-theme-refresh
+  echo "OK — refreshed active theme: $current"
+  ;;
+*)
+  echo "OK — apply with: omarchy theme set x1-stealth (or x1 / x1-redline / x1-graphite)"
+  ;;
+esac

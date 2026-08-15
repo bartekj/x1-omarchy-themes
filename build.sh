@@ -14,13 +14,11 @@ REQUIRED_KEYS=(
   color0 color1 color2 color3 color4 color5 color6 color7
   color8 color9 color10 color11 color12 color13 color14 color15
   display_name description icons_theme vscode_name
-  surface surface_raised surface_hover surface_active
-  clock_bg workspace_active resource_bg
-  muted border border_soft accent_dim border_gradient
-  warning healthy critical
-  resource_cpu resource_memory resource_temp resource_disk
+  surface surface_raised
+  muted border border_soft border_gradient
+  warning critical
   bg_tint weave_hi weave_lo
-  pill_radius btn_radius bar_alpha pill_alpha pill_border_alpha ws_alpha
+  bar_alpha pill_alpha pill_border_alpha
   hypr_rounding hypr_gaps_in hypr_gaps_out hypr_border_size
 )
 

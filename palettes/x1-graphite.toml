@@ -34,27 +34,16 @@ color15 = "#fafbfc"
 # surface ramp
 surface = "#1c2024"
 surface_raised = "#272d33"
-surface_hover = "#313840"
-surface_active = "#2a3036"
-clock_bg = "#22272d"
-workspace_active = "#272d33"
-resource_bg = "#1b2024"
 
 # lines & emphasis
 muted = "#a2aab3"
 border = "#424951"
 border_soft = "#4c545e"
-accent_dim = "#7b555a"
 border_gradient = "#7fa0bf"
 
-# semantic / resources
+# semantic
 warning = "#c99a68"
-healthy = "#8fb0a0"
 critical = "#dc6470"
-resource_cpu = "#a0c0dd"
-resource_memory = "#a8c8b8"
-resource_temp = "#dfba83"
-resource_disk = "#cbb7d9"
 
 # background generation knobs
 bg_tint = "#9a6a70"
@@ -62,12 +51,9 @@ weave_hi = "#272d33"
 weave_lo = "#101214"
 
 # shape & glass identity
-pill_radius = "8"
-btn_radius = "6"
 bar_alpha = "0.65"
 pill_alpha = "0.85"
 pill_border_alpha = "0.86"
-ws_alpha = "0.65"
 hypr_rounding = "10"
 hypr_gaps_in = "6"
 hypr_gaps_out = "12"

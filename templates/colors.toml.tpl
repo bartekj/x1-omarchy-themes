@@ -1,24 +1,36 @@
 # {{ display_name }}: {{ description }}
-accent = "{{ accent }}"
-cursor = "{{ cursor }}"
-foreground = "{{ foreground }}"
-background = "{{ background }}"
-selection_foreground = "{{ selection_foreground }}"
-selection_background = "{{ selection_background }}"
+mode = "dark"
 
-color0 = "{{ color0 }}"
-color1 = "{{ color1 }}"
-color2 = "{{ color2 }}"
-color3 = "{{ color3 }}"
-color4 = "{{ color4 }}"
-color5 = "{{ color5 }}"
-color6 = "{{ color6 }}"
-color7 = "{{ color7 }}"
-color8 = "{{ color8 }}"
-color9 = "{{ color9 }}"
-color10 = "{{ color10 }}"
-color11 = "{{ color11 }}"
-color12 = "{{ color12 }}"
-color13 = "{{ color13 }}"
-color14 = "{{ color14 }}"
-color15 = "{{ color15 }}"
+accent = "{{ accent }}"
+selection = "{{ selection_background }}"
+muted = "{{ color8 }}"
+
+background = "{{ background }}"
+lighter_background = "{{ surface_raised }}"
+# dark_background / darker_background: auto-derived by omarchy-theme-color
+
+foreground = "{{ foreground }}"
+dark_foreground = "{{ muted }}"
+light_foreground = "{{ cursor }}"
+bright_foreground = "{{ color15 }}"
+
+red = "{{ color1 }}"
+green = "{{ color2 }}"
+yellow = "{{ color3 }}"
+blue = "{{ color4 }}"
+magenta = "{{ color5 }}"
+cyan = "{{ color6 }}"
+orange = "{{ warning }}"
+
+bright_red = "{{ color9 }}"
+bright_green = "{{ color10 }}"
+bright_yellow = "{{ color11 }}"
+bright_blue = "{{ color12 }}"
+bright_magenta = "{{ color13 }}"
+bright_cyan = "{{ color14 }}"
+
+# X1 border identity: accent -> border_gradient at dd alpha, 35deg;
+# inactive = hairline border at 88 alpha. Consumed by Omarchy's stock
+# hyprland.lua.tpl and the shell.toml [hyprland] tokens.
+hyprland_active_border = "rgba({{ accent_strip }}dd) rgba({{ border_gradient_strip }}dd) 35deg"
+hyprland_inactive_border = "rgba({{ border_strip }}88)"

@@ -2,10 +2,10 @@
 
 {{ description }}
 
-Part of the X1 theme family for Omarchy (X1 / Graphite / Redline / Stealth).
-Waybar is arranged as a compact cockpit: workspaces and controls on the left,
-a prominent clock in the center, hardware status on the right, and an X1 theme
-switcher that cycles the family. Click the clock for a terminal calendar.
+Part of the X1 theme family for Omarchy 4 (X1 / Graphite / Redline / Stealth).
+The omarchy-shell bar, launcher, notifications, and lock screen pick up the
+variant's glass identity through `shell.<section>.toml` overrides; window
+borders, gaps, and rounding come from the theme's `hyprland.lua`.
 
 | Token | Value |
 | --- | --- |
