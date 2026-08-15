@@ -100,12 +100,25 @@ level (values stay in the bar foreground; no height changes). The frame
 reuses the shell's own tokens (`Style.normalFillFor/normalBorderFor`,
 radius = `Style.cornerRadius` → the variant's Hyprland rounding) and binds
 to `bar.barForeground`, so it recolors in transparent-bar mode.
-**Left click opens a native KeyboardPanel popup** (like Wi-Fi/volume):
-Processor (usage meter, temperature, load average), Memory (RAM + swap
-meters, used/total), Disk /, uptime, and a btop button. Right click on the
-card jumps straight to btop. IPC: `omarchy-shell bart.resources
-open|close|toggle`. Data and level colors come from
-`bar/scripts/x1-bar-stats` (2s tick, always on — the panel adds no polling),
+**Each cell opens its own native KeyboardPanel popup** (like Wi-Fi/volume),
+anchored under the cell that was clicked:
+- **CPU** — usage meter, load average, runnable/threads, temperature, a
+  per-thread grid (cluster-labelled P/E/LP with live MHz), top processes by
+  real CPU delta (not `ps` lifetime average).
+- **Memory** — RAM meter with used/total, available/cached/shared/dirty,
+  zram swap meter, top consumers aggregated per command name.
+- **Temperature** — package meter scaled to the 110 °C throttle point, all
+  12 core sensors, NVMe/Wi-Fi/EC/skin sensors, both fan RPMs and fan level.
+- **Storage** — a meter per filesystem (btrfs subvolumes deduped) and the
+  NVMe model.
+
+Detail data comes from `bar/scripts/x1-bar-detail <section>`, polled at 1s
+**only while a panel is open**; late replies are discarded when the section
+changes. Right click anywhere on the card jumps straight to btop, Enter in an
+open panel does the same. IPC: `omarchy-shell bart.resources
+open|close|toggle`, plus `section cpu|mem|temp|disk` to summon one directly
+(handy for a keybinding). Headline values and level colors come from
+`bar/scripts/x1-bar-stats` (2s tick, always on),
 which resolves green/orange/red from the ACTIVE theme via
 `omarchy-theme-color green|orange|bright_red`. Temperature = mean of all
 coretemp `Core *` sensors (the package DTS swings 20°C+ on boost spikes)
@@ -126,6 +139,19 @@ the default here.
 (`{"type": "command"}` module: click = next variant, right-click =
 `omarchy-menu summon style.theme`). The shell.json entries live in
 `~/.config/omarchy/shell.json` (user config, NOT installed by install.sh).
+
+`bar/plugins/bart.media/` is the now-playing widget: the stock media row
+wrapped in the same framed card, prefixed with a **per-source Nerd Font
+glyph** (`SourceIcons.js` — Spotify/Chrome/Firefox/mpv/…, music note as
+fallback). It is widget-only **by design**: cloning `omarchy.media` would
+also clone its `service` kind, which disables the first-party service and
+breaks both this widget and the audio panel's media section. Two fixes over
+stock: the scroll animation resets `x` when it stops (a value source, not a
+binding — it used to freeze off-clip, leaving an invisible label in a slot
+that still reserved width, which is why now-playing seemed to vanish), and
+`maxLabelWidth` moved to a scaled token. Note YouTube-in-a-browser shows the
+browser glyph: Chromium exposes one MPRIS interface for all tabs and emits no
+`xesam:url`, so the site is genuinely not identifiable.
 
 `bar/plugins/bart.weather/` is a patched clone of the built-in weather
 plugin (`omarchy plugin clone omarchy.weather`) that shows

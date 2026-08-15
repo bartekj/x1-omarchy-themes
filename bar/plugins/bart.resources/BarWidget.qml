@@ -32,8 +32,10 @@ BarWidget {
     if ("hostWidget" in target) target.hostWidget = root
   }
 
-  function togglePanel() {
-    if (panelLoader.item && panelLoader.item.toggle) panelLoader.item.toggle()
+  // Each cell opens its own section of the detail panel, anchored under the
+  // cell that was clicked.
+  function openCell(section, item) {
+    if (panelLoader.item && panelLoader.item.openFor) panelLoader.item.openFor(section, item)
   }
 
   // Shape contract for the bar's popout coordinator and shell.summon routing:
@@ -64,7 +66,9 @@ BarWidget {
 
   Process {
     id: statsProc
-    command: ["bash", "-lc", "~/.config/omarchy/bar/scripts/x1-bar-stats"]
+    // bash -c, not -lc: a login shell spends ~150ms sourcing profiles, several
+    // times the cost of the script itself, on every tick.
+    command: ["bash", "-c", "~/.config/omarchy/bar/scripts/x1-bar-stats"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {
@@ -102,13 +106,28 @@ BarWidget {
     property string icon
     property string value
     property int level: 0
+    property string section: ""
 
     implicitWidth: textRow.implicitWidth
-    implicitHeight: textRow.implicitHeight
+    implicitHeight: root.barSize
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+
+    MouseArea {
+      anchors.fill: parent
+      acceptedButtons: Qt.LeftButton | Qt.RightButton
+      cursorShape: Qt.PointingHandCursor
+      onClicked: function(mouse) {
+        if (mouse.button === Qt.RightButton) {
+          if (root.bar) root.bar.run("omarchy-launch-or-focus-tui btop")
+        } else {
+          root.openCell(cell.section, cell)
+        }
+      }
+    }
 
     Row {
       id: textRow
+      anchors.centerIn: parent
       spacing: 4
 
       Text {
@@ -160,37 +179,38 @@ BarWidget {
         icon: ""
         value: root.stats ? root.pad(root.stats.cpu.v, 3) + "%" : "  -%"
         level: root.stats ? root.stats.cpu.l : 0
+        section: "cpu"
       }
       CellSeparator {}
       ResourceCell {
         icon: ""
         value: root.stats ? root.pad(root.stats.mem.v, 3) + "%" : "  -%"
         level: root.stats ? root.stats.mem.l : 0
+        section: "mem"
       }
       CellSeparator {}
       ResourceCell {
         icon: ""
         value: root.stats ? root.pad(root.stats.temp.v, 2) + "°" : " -°"
         level: root.stats ? root.stats.temp.l : 0
+        section: "temp"
       }
       CellSeparator {}
       ResourceCell {
         icon: ""
         value: root.stats ? root.pad(root.stats.disk.v, 2) + "%" : " -%"
         level: root.stats ? root.stats.disk.l : 0
+        section: "disk"
       }
     }
 
+    // Frame padding only: cells handle their own clicks. Right click stays
+    // a shortcut to the full monitor from anywhere on the card.
     MouseArea {
       anchors.fill: parent
-      acceptedButtons: Qt.LeftButton | Qt.RightButton
-      onClicked: function(mouse) {
-        if (mouse.button === Qt.RightButton) {
-          if (root.bar) root.bar.run("omarchy-launch-or-focus-tui btop")
-        } else {
-          root.togglePanel()
-        }
-      }
+      acceptedButtons: Qt.RightButton
+      onClicked: if (root.bar) root.bar.run("omarchy-launch-or-focus-tui btop")
+      z: -1
     }
   }
 }

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "bart.media",
+  "name": "Media",
+  "version": "1.0.0",
+  "author": "bart",
+  "description": "Now playing with a source icon, framed like the X1 resources card",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "barWidget": {
+    "displayName": "Media",
+    "category": "Media",
+    "allowMultiple": false,
+    "defaultSection": "left"
+  }
+}
