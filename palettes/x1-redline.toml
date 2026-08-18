@@ -39,6 +39,7 @@ surface_raised = "#21262c"
 muted = "#969ea8"
 border = "#535c67"
 border_soft = "#5d6674"
+window_border_inactive = "#665854"
 accent_dim = "#7a1f2b"
 
 # semantic

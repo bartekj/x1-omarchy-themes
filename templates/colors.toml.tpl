@@ -31,9 +31,9 @@ bright_blue = "{{ color12 }}"
 bright_magenta = "{{ color13 }}"
 bright_cyan = "{{ color14 }}"
 
-# X1 border identity: accent -> accent_dim at dd alpha, 35deg — the variant's
-# own accent deepened, no foreign hue. Inactive = border at aa alpha (must be
-# clearly visible at a glance, quieter than active). Consumed by Omarchy's
-# stock hyprland.lua.tpl and the shell.toml [hyprland] tokens.
-hyprland_active_border = "rgba({{ accent_strip }}dd) rgba({{ accent_dim_strip }}dd) 35deg"
-hyprland_inactive_border = "rgba({{ border_strip }}aa)"
+# X1 border identity: a solid full-alpha accent line, active; a warm
+# graphite line, inactive. Consumed by Omarchy's stock hyprland.lua.tpl and
+# the shell.toml [hyprland] tokens — window borders and popup borders are
+# now the exact same line.
+hyprland_active_border = "rgba({{ accent_strip }}ff)"
+hyprland_inactive_border = "rgba({{ window_border_inactive_strip }}ff)"

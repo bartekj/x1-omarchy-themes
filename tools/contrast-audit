@@ -15,6 +15,8 @@ MIN = {
     "accent/surface": (3.0, "accent", "surface"),
     "critical/bg": (3.0, "critical", "background"),
     "warning/bg": (3.0, "warning", "background"),
+    "accent/bg": (3.0, "accent", "background"),
+    "winBorderInact/bg": (1.8, "window_border_inactive", "background"),
 }
 
 
