@@ -20,8 +20,11 @@ templates/*.tpl           14 shared templates, Omarchy {{ key }} syntax:
   colors.toml               semantic palette (quattro schema) + solid border tokens
   hyprland.lua              solid full-alpha borders (border_part_of_window
                             =false), gaps, rounding, shadow (range = gaps_out),
-                            blur with xray across a layer_rule list of shell
-                            popup namespaces, group/nogroup border colors
+                            window blur with xray (kills wallpaper bloom),
+                            blur layer_rules for shell popups (no xray),
+                            one glass via default-opacity rule (0.97/0.94,
+                            fullscreen 1.0, browsers pinned opaque),
+                            group/nogroup border colors
   shell.{bar,launcher,menu,notifications,lock,controls,popups,tooltip}.toml
                             omarchy-shell section overrides (glass + border
                             system; see "Border system" below)
