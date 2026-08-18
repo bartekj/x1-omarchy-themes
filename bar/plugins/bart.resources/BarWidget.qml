@@ -32,9 +32,9 @@ BarWidget {
     return String(v).padStart(w, " ")
   }
 
-  // Rolling history for the "spark" readout: oldest to newest, one sample per
-  // stats tick. Reassigned wholesale rather than mutated in place, because a
-  // push into an existing array does not notify QML bindings.
+  // Rolling history for the "columns" readout: oldest to newest, one sample
+  // per stats tick. Reassigned wholesale rather than mutated in place,
+  // because a push into an existing array does not notify QML bindings.
   readonly property int historyLen: 24
   property var history: ({ cpu: [], mem: [], temp: [], disk: [] })
 

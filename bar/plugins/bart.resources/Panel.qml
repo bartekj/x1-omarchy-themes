@@ -28,7 +28,7 @@ Panel {
   readonly property var barIdentity: hostWidget || root
 
   readonly property var stats: hostWidget ? hostWidget.stats : null
-  readonly property var levelColors: stats && stats.colors ? stats.colors : ["#7fbf7f", "#d19a66", "#e06c75"]
+  readonly property var levelColors: stats && stats.colors ? stats.colors : ["#9199a3", "#d9dde3", "#e06c75"]
   property var detail: null
   // Section-scoped views of `detail`: the payload shape differs per section,
   // so bindings must never read a field that belongs to another section's

@@ -1,5 +1,4 @@
 import QtQuick
-import qs.Commons
 
 // How a single resource cell states its value.
 //
@@ -10,7 +9,7 @@ import qs.Commons
 // columns keeps the digits: a graph alone shows trend but loses the reading,
 // and at bar size the reading is what you actually glance for. The gaps
 // between the columns are what keep a steady value reading as an even chart
-// rather than a solid block — the failure mode that killed the sparkline.
+// rather than a solid block — the failure mode that retired the old readout.
 //
 // Every mode keeps a fixed width. The value text is space-padded upstream, so
 // nothing in the row shifts as 2% becomes 100%.
