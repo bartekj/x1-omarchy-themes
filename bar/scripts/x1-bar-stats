@@ -88,8 +88,11 @@ lvl() {
   if ((v >= crit)); then echo 2; elif ((v >= warn)); then echo 1; else echo 0; fi
 }
 
-ok=$(omarchy-theme-color green '#7fbf7f')
-warn=$(omarchy-theme-color orange '#d19a66')
+# Mono ramp: the cluster idles in gray, brightens to the foreground on
+# warning, and only goes red at critical. Accent never means error and
+# green/orange never appear in the bar.
+ok=$(omarchy-theme-color muted '#9199a3')
+warn=$(omarchy-theme-color foreground '#d9dde3')
 crit=$(omarchy-theme-color bright_red '#e06c75')
 
 printf '{"cpu":{"v":%d,"l":%d},"mem":{"v":%d,"l":%d,"used":%s,"total":%s},"temp":{"v":%d,"l":%d},"disk":{"v":%d,"l":%d,"used":%s,"total":%s},"swap":{"v":%d,"used":%s,"total":%s},"load":"%s · %s · %s","uptime":"%s","colors":["%s","%s","%s"]}\n' \
