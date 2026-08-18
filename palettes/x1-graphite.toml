@@ -1,29 +1,29 @@
-# X1 Graphite — brighter graphite surfaces for daylight readability.
+# X1 Graphite — daylight graphite: brighter surfaces, TrackPoint-red accents.
 
 # identity / meta
 display_name = "X1 Graphite"
-description = "Brighter graphite surfaces tuned for daylight readability."
-icons_theme = "Yaru-wartybrown"
-vscode_name = "Default Dark+"
+description = "Daylight graphite — brighter surfaces, TrackPoint-red accents."
+icons_theme = "Yaru-red"
+vscode_name = "Default Dark Modern"
 
 # colors.toml keys
-accent = "#9a6a70"
+accent = "#ce2835"
 cursor = "#f0f3f5"
 foreground = "#e4e7ea"
 background = "#101214"
 selection_foreground = "#fafbfc"
-selection_background = "#424951"
+selection_background = "#56606a"
 
 color0 = "#101214"
-color1 = "#b74a55"
+color1 = "#ce2835"
 color2 = "#8fb0a0"
 color3 = "#c99a68"
 color4 = "#7fa0bf"
 color5 = "#ad99bd"
 color6 = "#7fa9aa"
 color7 = "#e4e7ea"
-color8 = "#424951"
-color9 = "#dc6470"
+color8 = "#56606a"
+color9 = "#e0555f"
 color10 = "#a8c8b8"
 color11 = "#dfba83"
 color12 = "#a0c0dd"
@@ -37,16 +37,16 @@ surface_raised = "#272d33"
 
 # lines & emphasis
 muted = "#a2aab3"
-border = "#424951"
-border_soft = "#4c545e"
+border = "#56606a"
+border_soft = "#606a77"
 border_gradient = "#7fa0bf"
 
 # semantic
 warning = "#c99a68"
-critical = "#dc6470"
+critical = "#e0555f"
 
 # background generation knobs
-bg_tint = "#9a6a70"
+bg_tint = "#ce2835"
 weave_hi = "#272d33"
 weave_lo = "#101214"
 
@@ -54,7 +54,7 @@ weave_lo = "#101214"
 bar_alpha = "0.32"
 pill_alpha = "0.85"
 pill_border_alpha = "0.86"
-hypr_rounding = "10"
-hypr_gaps_in = "6"
-hypr_gaps_out = "12"
+hypr_rounding = "8"
+hypr_gaps_in = "5"
+hypr_gaps_out = "10"
 hypr_border_size = "2"

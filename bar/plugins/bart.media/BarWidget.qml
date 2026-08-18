@@ -39,17 +39,20 @@ BarWidget {
   implicitWidth: hasMedia ? frame.implicitWidth : 0
   implicitHeight: barSize
 
-  // Same framed card as the X1 resources cluster: controls-section fill and
-  // border tokens, with the theme variant's Hyprland corner rounding.
-  Rectangle {
+  // Same card frame as the X1 resources cluster, so the two cards in the bar
+  // read as one surface. Media has no load to report, so bloom gets a steady
+  // halo in the bar foreground rather than a level colour.
+  CardFrame {
     id: frame
     anchors.verticalCenter: parent.verticalCenter
     implicitWidth: row.implicitWidth + 2 * Style.spacing.controlPaddingX
     height: parent.height - 2 * Style.space(1)
-    radius: Math.min(Style.cornerRadius, height / 2)
-    color: Style.normalFillFor(root.lineColor, root.lineColor)
-    border.width: Style.normalBorderWidth
-    border.color: Style.normalBorderFor(root.lineColor, root.lineColor)
+    lineColor: root.lineColor
+    frameStyle: root.setting("frameStyle", "none")
+    bulge: Number(root.setting("lensBulge", 4))
+    specular: Number(root.setting("lensSpecular", 60)) / 100
+    glowColor: root.lineColor
+    glowIntensity: 0.35
 
   Row {
     id: row

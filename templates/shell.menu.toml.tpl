@@ -1,4 +1,5 @@
-# {{ display_name }} menu: same card treatment as the launcher.
+# {{ display_name }} menu: same card treatment as the launcher — hairline
+# border, selected row echoes the window-border gradient.
 background                = "{{ surface }}"
 background-alpha          = {{ pill_alpha }}
 text                      = "{{ foreground }}"
@@ -9,5 +10,5 @@ scrim-alpha               = 0.5
 selected-background       = "{{ foreground }}"
 selected-background-alpha = 0.08
 selected-text             = "{{ accent }}"
-selected-border           = "{{ accent }}"
-selected-border-alpha     = 0.25
+selected-border           = "hyprland.active-border"
+selected-border-alpha     = 0.35

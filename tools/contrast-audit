@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+# WCAG contrast audit for every palette in palettes/*.toml.
+# Prints a ratio table and exits non-zero if any check fails, so it can
+# gate a build. Thresholds are floors, not targets — aim a little above.
+import re
+import glob
+import sys
+
+MIN = {
+    "fg/bg": (7.0, "foreground", "background"),
+    "muted/bg": (4.5, "muted", "background"),
+    "color8/bg": (2.8, "color8", "background"),
+    "selFG/selBG": (4.5, "selection_foreground", "selection_background"),
+    "selBG/bg": (1.35, "selection_background", "background"),
+    "accent/surface": (3.0, "accent", "surface"),
+    "critical/bg": (3.0, "critical", "background"),
+    "warning/bg": (3.0, "warning", "background"),
+}
+
+
+def lum(hexcolor):
+    h = hexcolor.lstrip("#")
+    r, g, b = (int(h[i : i + 2], 16) / 255 for i in (0, 2, 4))
+
+    def lin(c):
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+
+
+def contrast(a, b):
+    la, lb = lum(a), lum(b)
+    hi, lo = max(la, lb), min(la, lb)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def parse(path):
+    colors = {}
+    with open(path) as fh:
+        for line in fh:
+            m = re.match(r'^(\w+)\s*=\s*"?(#[0-9a-fA-F]{6})', line.strip())
+            if m:
+                colors[m.group(1)] = m.group(2)
+    return colors
+
+
+def audit(path):
+    name = path.rsplit("/", 1)[-1][: -len(".toml")]
+    colors = parse(path)
+    rows, failures = [], 0
+    for label, (minimum, a, b) in MIN.items():
+        ratio = contrast(colors[a], colors[b])
+        ok = ratio >= minimum
+        failures += not ok
+        rows.append(f"  {label:<14} {ratio:5.2f}  (min {minimum})  {'ok' if ok else 'FAIL'}")
+    for i in list(range(1, 7)) + list(range(9, 15)):
+        ratio = contrast(colors[f"color{i}"], colors["background"])
+        ok = ratio >= 3.0
+        failures += not ok
+        rows.append(f"  color{i}/bg{'':<6} {ratio:5.2f}  (min 3.0)   {'ok' if ok else 'FAIL'}")
+    for i in range(1, 7):
+        if lum(colors[f"color{i + 8}"]) <= lum(colors[f"color{i}"]):
+            failures += 1
+            rows.append(f"  color{i + 8} is not brighter than color{i}  FAIL")
+    print(f"== {name} ==  {'OK' if not failures else str(failures) + ' FAILURES'}")
+    print("\n".join(rows))
+    return failures
+
+
+def main():
+    total = 0
+    for path in sorted(glob.glob("palettes/*.toml")):
+        total += audit(path)
+    if total:
+        print(f"\n{total} failing check(s)")
+        return 1
+    print("\nall palettes pass")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

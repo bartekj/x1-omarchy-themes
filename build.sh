@@ -67,12 +67,25 @@ generate_heritage() {
 
 populate_backgrounds() {
   local name="$1" out="$2" dir copied=0
+  local tint="${P[bg_tint]}"
+
+  tint_photo() {
+    local img="$1"
+    magick "$img" \
+      \( +clone -fill "$tint" -colorize 100 \) \
+      -compose blend -define compose:args=8x92 -composite \
+      "$img"
+  }
 
   # User wallpapers win: anything in assets/backgrounds/<variant>/ or
-  # assets/backgrounds/all/ ships as-is INSTEAD of the generated set.
+  # assets/backgrounds/all/ ships INSTEAD of the generated set, tinted with
+  # the variant accent so the identity carries into photos too.
   for dir in "assets/backgrounds/$name" "assets/backgrounds/all"; do
     if compgen -G "$dir/*" >/dev/null; then
       cp -- "$dir"/* "$out/backgrounds/"
+      for img in "$out/backgrounds"/*; do
+        tint_photo "$img"
+      done
       copied=1
     fi
   done
@@ -90,33 +103,44 @@ generate_assets() {
   populate_backgrounds "$name" "$out"
 
   # Picker preview: first background (sort order = what omarchy shows first)
-  # + accent stripe + 16-swatch ANSI strip.
+  # + accent stripe + 16-swatch ANSI strip. 1600x900 (16:9) 8-bit PNG — the
+  # picker thumbnailer targets 1536x864, and its lazy path hands Qt the
+  # original file, which must be 8-bit or the card renders blank.
   local first_bg
   first_bg=$(find "$out/backgrounds" -maxdepth 1 -type f | sort | head -1)
   [[ -n "$first_bg" ]] || die "$name: no backgrounds produced"
 
   local swatches=()
   for i in $(seq 0 15); do
-    swatches+=(\( -size 50x52 xc:"${P[color$i]}" \))
+    swatches+=(\( -size 100x52 xc:"${P[color$i]}" \))
   done
   magick \
-    \( "$first_bg" -resize 800x420^ -gravity center -extent 800x420 \) \
-    \( -size 800x8 xc:"${accent}" \) \
+    \( "$first_bg" -resize 1600x840^ -gravity center -extent 1600x840 \) \
+    \( -size 1600x8 xc:"${accent}" \) \
     \( "${swatches[@]}" +append \) \
-    -append "$out/preview.png"
+    -append -depth 8 "$out/preview.png"
 
   # 4) Plymouth unlock glyph + its picker preview.
   local font
   font=$(fc-match -f '%{file}' 'JetBrainsMono Nerd Font:bold')
   magick -size 512x512 xc:none -gravity center \
     -font "$font" -pointsize 220 -fill "${foreground}" -annotate 0 'X1' \
-    "$out/unlock.png"
-  magick "$out/unlock.png" -background "${background}" -flatten "$out/preview-unlock.png"
+    -depth 8 "$out/unlock.png"
+  magick "$out/unlock.png" -background "${background}" -flatten -depth 8 "$out/preview-unlock.png"
 }
 
 [[ -x /usr/bin/magick ]] || die "ImageMagick (magick) not found"
 compgen -G 'palettes/*.toml' >/dev/null || die "no palettes found in palettes/"
 compgen -G 'templates/*.tpl' >/dev/null || die "no templates found in templates/"
+
+# Bar plugins ship prebuilt shaders so this build needs no qt6-shadertools;
+# only warn when a source edit has outrun the committed artifact.
+for stale in bar/plugins/*/card.frag.qsb; do
+  [[ -f $stale ]] || continue
+  if [[ bar/shared/card.frag -nt $stale || bar/shared/CardFrame.qml -nt $stale ]]; then
+    echo "build.sh: WARNING: $stale is older than bar/shared/ — run ./tools/build-plugin-shared" >&2
+  fi
+done
 
 for palette in palettes/*.toml; do
   name=$(basename "$palette" .toml)

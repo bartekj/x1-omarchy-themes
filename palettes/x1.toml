@@ -7,22 +7,22 @@ icons_theme = "Yaru-red"
 vscode_name = "Default Dark Modern"
 
 # colors.toml keys
-accent = "#c21f30"
+accent = "#c82031"
 cursor = "#e6e9ed"
 foreground = "#d9dde3"
 background = "#0b0d0f"
 selection_foreground = "#f6f7f9"
-selection_background = "#343a42"
+selection_background = "#535d69"
 
 color0 = "#0b0d0f"
-color1 = "#c21f30"
+color1 = "#c82031"
 color2 = "#83a598"
 color3 = "#d19a66"
 color4 = "#5e8fbf"
 color5 = "#a78bba"
 color6 = "#6fa3a8"
 color7 = "#d9dde3"
-color8 = "#343a42"
+color8 = "#535d69"
 color9 = "#ef4f5f"
 color10 = "#9fc3b4"
 color11 = "#e2b27a"
@@ -37,8 +37,8 @@ surface_raised = "#20262c"
 
 # lines & emphasis
 muted = "#9199a3"
-border = "#343a42"
-border_soft = "#3b424b"
+border = "#535d69"
+border_soft = "#5a6472"
 border_gradient = "#5e8fbf"
 
 # semantic
@@ -46,7 +46,7 @@ warning = "#d19a66"
 critical = "#ef4f5f"
 
 # background generation knobs
-bg_tint = "#c21f30"
+bg_tint = "#c82031"
 weave_hi = "#20262c"
 weave_lo = "#0b0d0f"
 

@@ -5,16 +5,100 @@
   "version": "1.0.0",
   "author": "bart",
   "description": "CPU / RAM / temp / disk cluster with a detail panel",
-  "kinds": ["bar-widget"],
-  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
   "barWidget": {
     "displayName": "Resources",
     "category": "System",
     "allowMultiple": false,
     "defaultSection": "right",
-    "defaults": { "intervalSec": 2 },
+    "defaults": {
+      "intervalSec": 2,
+      "frameStyle": "none",
+      "lensBulge": 4,
+      "lensSpecular": 60,
+      "dividerStyle": "glitch",
+      "readoutStyle": "sparkwide"
+    },
     "schema": [
-      { "key": "intervalSec", "type": "integer", "label": "Poll interval (s)", "min": 1, "max": 60 }
+      {
+        "key": "intervalSec",
+        "type": "integer",
+        "label": "Poll interval (s)",
+        "min": 1,
+        "max": 60
+      },
+      {
+        "key": "frameStyle",
+        "type": "enum",
+        "label": "Card frame",
+        "options": [
+          "none",
+          "emboss",
+          "lens",
+          "dome",
+          "bracket",
+          "rail",
+          "chamfer",
+          "inset",
+          "blade",
+          "bloom",
+          "flat"
+        ],
+        "defaultValue": "none",
+        "description": "bracket: machined end caps, no surface. rail: accent bar under the row. chamfer: octagonal cut-corner plate. inset: a well carved into the bar. blade: accent edge left, rounded right. emboss/lens/dome: shaded plate, bead, lozenge. bloom: halo coloured by load. flat: the original bordered rectangle."
+      },
+      {
+        "key": "lensBulge",
+        "type": "integer",
+        "label": "Lens shoulder (px)",
+        "min": 2,
+        "max": 12,
+        "defaultValue": 4,
+        "description": "Width of the domed edge. Larger reads rounder, smaller reads sharper."
+      },
+      {
+        "key": "lensSpecular",
+        "type": "integer",
+        "label": "Lens highlight (%)",
+        "min": 0,
+        "max": 150,
+        "defaultValue": 60,
+        "description": "Strength of the specular hotspot on the dome."
+      },
+      {
+        "key": "dividerStyle",
+        "type": "enum",
+        "label": "Cell divider",
+        "options": [
+          "glitch",
+          "slash",
+          "chevron",
+          "tick",
+          "bars",
+          "hairline"
+        ],
+        "defaultValue": "glitch",
+        "description": "slash: double shear with an accent stroke. glitch: the rule broken into offset segments. chevron: a pointed > giving the row direction. tick: HUD I-beam with an accent node. bars: stacked dashes that are a live readout of aggregate load. hairline: the original 1px rule."
+      },
+      {
+        "key": "readoutStyle",
+        "type": "enum",
+        "label": "Cell readout",
+        "options": [
+          "sparkwide",
+          "spark",
+          "meter",
+          "segments",
+          "text"
+        ],
+        "defaultValue": "sparkwide",
+        "description": "text: the padded number. meter: the number with a progress rule under it. segments: a five-segment LED bar instead of the number. spark: the number over a faint sparkline of recent history. sparkwide: the number, then the sparkline beside it at full contrast."
+      }
     ]
   }
 }

@@ -1,25 +1,29 @@
 # X1 theme family for Omarchy
 
-Four dark ThinkPad-inspired variants generated from a single source of truth.
+Five dark ThinkPad-inspired variants generated from a single source of truth.
 Targets **Omarchy 4 "quattro"** (omarchy-shell + Hyprland Lua config).
 
 | Variant | Character | Accent |
 | --- | --- | --- |
-| `x1` | Matte graphite, TrackPoint-red accents | `#c21f30` |
-| `x1-graphite` | Brighter surfaces for daylight | `#9a6a70` |
+| `x1` | Matte graphite, TrackPoint-red accents | `#c82031` |
+| `x1-graphite` | Daylight X1, brighter surfaces, TrackPoint-red accents | `#ce2835` |
 | `x1-redline` | TrackPoint-forward, clearer red | `#d12736` |
 | `x1-stealth` | Near-black, neutral accents | `#7d8792` |
+| `x1-ember` | Warm graphite, keyboard-backlight amber | `#d9a05b` |
 
 ## Layout
 
 ```
 palettes/<variant>.toml   single source of truth (~30 tokens per variant)
-templates/*.tpl           11 shared templates, Omarchy {{ key }} syntax:
+templates/*.tpl           14 shared templates, Omarchy {{ key }} syntax:
   colors.toml               semantic palette (quattro schema) + border gradient
   hyprland.lua              borders, gaps, rounding, blur, terminal opacity
-  shell.{bar,launcher,menu,notifications,lock}.toml
-                            omarchy-shell section overrides (glass identity)
+  shell.{bar,launcher,menu,notifications,lock,controls,popups,tooltip}.toml
+                            omarchy-shell section overrides (glass + border
+                            system; see "Border system" below)
   icons.theme / neovim.lua / vscode.json / README.md
+tools/contrast-audit      WCAG contrast audit of every palette (gates nothing,
+                          run it when touching colors; exits non-zero on fail)
 assets/source/BG1.png     shared original wallpaper (tinted per variant)
 build/                    output (gitignored)
 ```
@@ -29,12 +33,22 @@ build/                    output (gitignored)
 ```bash
 ./build.sh     # render templates + generate wallpapers/previews into build/
 ./install.sh   # copy build/* into ~/.config/omarchy/themes/ (+ refresh if active)
-omarchy theme set x1-stealth   # or x1 / x1-redline / x1-graphite
+omarchy theme set x1-stealth   # or x1 / x1-redline / x1-graphite / x1-ember
 ```
 
 Never edit `~/.config/omarchy/themes/x1*` by hand — edit a palette (or a
 template) here and rebuild. `omarchy-theme-refresh` is the fast dev loop
 (install.sh runs it automatically when an x1 variant is active).
+
+## Theme-picker previews
+
+`preview.png` must be an **8-bit** PNG: on the first picker open after a
+rebuild, the lazy-thumbnail path hands Qt the original file, and a 16-bit
+(Q16 magick default) PNG renders as a blank card — no placeholder, no
+retry. build.sh renders 1600x900 (the thumbnailer crops to 1536x864, 16:9)
+with `-depth 8`, and install.sh warms the thumbnail cache via
+`omarchy-theme-switcher --preload` so the first open never hits the lazy
+path.
 
 ## Custom wallpapers
 
@@ -66,16 +80,157 @@ Two routes:
 - The shell glass identity lives in `shell.<section>.toml` overrides:
   `bar_alpha` / `pill_alpha` / `pill_border_alpha` from the palette; corner
   radius is NOT a shell key — the shell reads `hyprctl decoration:rounding`,
-  so the per-variant radius (stealth 1 / redline 4 / x1 6 / graphite 10)
-  ships once, in `hyprland.lua`.
+  so the per-variant radius (stealth 1 / redline 4 / x1 6 / graphite 8 /
+  ember 10) ships once, in `hyprland.lua`.
 - Conventions enforced by the templates:
   - `accent` never means error; alerts use `critical` (== `color9`).
     ANSI `color1`/`color9` stay semantically red in every variant.
   - `border` = hairlines + inactive borders; `border_soft` = card borders
     (notifications, launcher, menu).
+  - `color8` doubles as the terminal dim gray, selection background, and
+    border base — it must hold ≥ 2.8:1 on `background` (see
+    `tools/contrast-audit`). The shell `muted` semantic maps to the
+    palette's brighter `muted` (~7:1), not to `color8`.
   - No font or size keys in any shell override — `omarchy-display-text-size`
     and the stock `[font]`/`[spacing]` sections stay in charge (see
     "Readability knobs" below).
+
+## Border system
+
+Four layers, one gradient (`accent` -> `border_gradient`, 35deg, from
+`hyprland_active_border`):
+
+1. **Windows** — the full gradient at 2px (1px stealth), via `hyprland.lua`.
+   Omarchy's stock `shell.toml` generation exposes it as the shared
+   `[hyprland] active-border` token.
+2. **Popups, tooltips, lock, polkit** — every bar flyout (dropdowns, OSD,
+   detail panels) gets the same glass as the quiet cards (`surface` at
+   `pill_alpha`, tooltip at 0.92) and echoes the window gradient via
+   `hyprland.active-border` / `...-foreground`.
+3. **Quiet cards** (launcher, menu, notifications) — hairline `border_soft`
+   at `pill_border_alpha`; the *selected* row echoes the window gradient
+   (`selected-border = "hyprland.active-border"` @ 0.35) instead of a solid
+   accent, tying selection to the window identity.
+4. **Controls** (`shell.controls.toml`) — a three-step border story for
+   buttons/dropdowns/toggles: idle = `border_soft` hairline @ 0.5,
+   interaction (hover/focus) = `border_gradient` @ 0.4/0.45, committed
+   (selected) = `accent` @ 0.45. Fill alphas stay near shell defaults.
+
+In ember the gradient is amber -> steel (complementary); in the red variants
+it is red -> steel; stealth keeps its neutral grey stop.
+
+### Card frames (the two bar cards)
+
+`bart.resources` and `bart.media` opt out of layer 4 entirely. Both default to
+`frameStyle = "none"` — no container at all — and the resources cluster gets
+its structure from **cell dividers** instead (see below). Eleven frame styles
+remain available per widget in `shell.json` via `frameStyle`.
+
+| Style | What it is |
+|---|---|
+| `none` (default) | Nothing at all; the cell dividers carry the structure |
+| `emboss` | Stamped plate — narrow crisp bevel, flat graded face |
+| `lens` | Convex glass bead — soft dome, wide lit shoulder |
+| `dome` | Glass lozenge — full-height curve, gloss band, pill corners |
+| `bracket` | No surface; machined end caps, `[ readout ]` |
+| `rail` | No enclosure; an accent-to-foreground bar under the row |
+| `chamfer` | Octagonal cut-corner plate with a hairline edge |
+| `inset` | A well carved into the bar — concave, not convex |
+| `blade` | Square accent edge left, rounded right; directional |
+| `bloom` | No frame at all — a halo behind the card, coloured by load |
+| `flat` | The original hairline-bordered rectangle |
+
+`emboss`/`lens`/`dome` shade one rounded rectangle and differ only in
+lighting; `bracket` through `blade` change the silhouette itself.
+
+### Cell dividers
+
+With no frame, the marks between the four readouts are the only structure the
+cluster has, so they carry the grouping and the identity on their own. Set per
+widget via `dividerStyle` (`bart.resources` only — the media widget is a single
+label). Drawn from primitives, not glyphs, so nothing depends on what the bar
+font ships.
+
+| Divider | What it is |
+|---|---|
+| `glitch` (default) | The rule broken into offset segments, accent on top |
+| `slash` | Double shear, accent on the trailing stroke, fading at both ends |
+| `chevron` | A pointed `>`; gives the row a reading direction |
+| `tick` | HUD I-beam with an accent node at its centre |
+| `bars` | Stacked dashes stepping down — a **live** readout of aggregate load |
+| `hairline` | The original 1px rule |
+
+### Cell readouts
+
+How each cell states its value, set per widget via `readoutStyle`
+(`bart.resources` only).
+
+| Readout | What it is |
+|---|---|
+| `text` | The padded number, as the cluster has always shown it |
+| `meter` | The number with a progress rule under it |
+| `segments` | A five-segment LED bar instead of the number |
+| `spark` | The number over a faint sparkline of the last ~48s |
+| `sparkwide` (default) | The number, then the sparkline beside it at full contrast |
+
+The two spark modes keep the digits — a graph alone shows trend but loses the
+reading, and the reading is what you glance for. They differ only in the
+trade: `spark` costs no extra width but sits the number on the graph;
+`sparkwide` keeps them apart at a cost of 30px per cell (4 spacing + 26
+canvas), so about 120px across the cluster.
+
+`segments` is the one mode that drops the number, deliberately: it trades the
+exact value for fill. The figures stay one click away in the detail panel.
+
+History is not persisted — it starts empty after a shell restart or a config
+reload, and fills over `historyLen` (24) ticks.
+
+Temperature is normalised separately (35-95 °C onto 0..1) because it is not a
+percentage — without that its meter would read as near-empty forever. History
+for `spark` is 24 samples at the poll interval, reassigned wholesale on each
+tick since pushing into an existing array does not notify QML bindings.
+
+`bars` is wired to data, because stepped widths read as an encoded value and
+it would be a false signal otherwise. It reports `max(cpu, mem)` — aggregate
+load, deliberately not per-cell state, since a divider belongs to neither of
+the cells it sits between and each cell's own level is already carried by its
+icon tint. Each dash keeps a base alpha and gains weight and the worst
+resource's colour on a continuous ramp; nothing ever switches fully off,
+because a blinking divider would take the row's only structure with it.
+
+Everything except `bloom` and `flat` is one fragment shader
+(`bar/shared/card.frag`) branching on `uStyle`; `rail` and `blade` also take
+the theme accent. A rounded-rect SDF gives a height field, its gradient
+gives a surface normal, and that drives a fresnel rim plus a specular hotspot
+lit from the upper left. Corner radius comes from `Style.cornerRadius`, so
+each variant keeps its own corner identity — except `dome`, which commits to
+a pill.
+
+`bloom` is QML rather than shader: its halo spills outside the item's bounds
+and takes its colour from live data, neither of which fits a shader clipped
+to the item. On `bart.resources` the halo is the worst resource's level
+colour, burning with `max(cpu, mem)` — the card swells red under load. Temp
+and disk are excluded from the intensity (one is not a percentage, the other
+barely moves). `bart.media` has no load to report, so it gets a steady halo
+in the bar foreground.
+
+- **Source of truth is `bar/shared/`.** Quickshell plugins cannot import
+  each other, so `tools/build-plugin-shared` compiles the shader and copies
+  `CardFrame.qml` + `card.frag.qsb` into both plugin directories. Never edit
+  those copies — the next run overwrites them.
+- **The `.qsb` is committed** so `./install.sh` needs no qt6-shadertools.
+  `build.sh` only warns when the source has outrun the artifact.
+- **The normal is solved analytically, not from `dFdx`/`dFdy`.** Screen-space
+  derivatives carry the render target's orientation, which flips the lighting
+  top-for-bottom on some backends.
+- **The bloom halo is a blurred outline, not a blurred fill.** Blurring a
+  filled rect leaves the middle fully coloured, which fogs the readout
+  instead of haloing it.
+- **Tuning settings** (also per widget): `lensBulge` (shoulder width px),
+  `lensSpecular` (highlight %). Style and tuning both take effect with
+  `omarchy-shell shell reloadConfig` — no shell restart.
+- If the shader fails to compile, `CardFrame` falls back to the flat framed
+  rectangle rather than rendering nothing.
 
 ## Readability knobs (don't fight them)
 
@@ -94,12 +249,11 @@ Two routes:
 `bar/plugins/bart.resources/` is a full third-party shell plugin (installed
 to `~/.config/omarchy/plugins/bart.resources/`, shell.json entry
 `{"id": "bart.resources"}` — no `"type"` key, that would bypass the plugin
-registry). It renders the framed resource card: CPU / RAM / temp / disk
+registry). It renders the resource card: CPU / RAM / temp / disk
 cells with hairline separators, each ICON tinted green/orange/red by usage
-level (values stay in the bar foreground; no height changes). The frame
-reuses the shell's own tokens (`Style.normalFillFor/normalBorderFor`,
-radius = `Style.cornerRadius` → the variant's Hyprland rounding) and binds
-to `bar.barForeground`, so it recolors in transparent-bar mode.
+level (values stay in the bar foreground; no height changes). The card is a
+**card frame** (see below) and binds to `bar.barForeground`, so it recolors
+in transparent-bar mode.
 **Each cell opens its own native KeyboardPanel popup** (like Wi-Fi/volume),
 anchored under the cell that was clicked:
 - **CPU** — usage meter, load average, runnable/threads, temperature, a
@@ -124,9 +278,9 @@ which resolves green/orange/red from the ACTIVE theme via
 coretemp `Core *` sensors (the package DTS swings 20°C+ on boost spikes)
 smoothed by an asymmetric EMA (fast up ½, slow down ⅕; millidegree state
 file with a 10s staleness guard). Thresholds (warn/crit): cpu 30/70, mem
-50/80, temp 55/78 °C, disk 70/90 %. Plugin QML hot-reloads on save
-(inotify + component cache clear) — unlike `bar/modules`, no shell restart
-needed.
+50/80, temp 55/78 °C, disk 70/90 %. Saving plugin QML reloads the registry
+but NOT the code — the component cache keeps the old version, so editing a
+widget still needs `omarchy-restart-shell` (see Gotchas).
 
 Bar transparency: the bar runs in the shell's native `"transparent": true`
 mode (no fill at all, wallpaper-contrast text) — toggled by double-clicking
@@ -136,7 +290,8 @@ wallpaper a tinted fill is imperceptible, which is why transparent mode is
 the default here.
 
 `bar/scripts/x1-theme-{status,next}` drive the bar theme switcher
-(`{"type": "command"}` module: click = next variant, right-click =
+(`{"type": "command"}` module: click = next variant in the cycle
+x1 -> stealth -> redline -> graphite -> ember, right-click =
 `omarchy-menu summon style.theme`). The shell.json entries live in
 `~/.config/omarchy/shell.json` (user config, NOT installed by install.sh).
 

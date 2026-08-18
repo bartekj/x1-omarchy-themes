@@ -5,12 +5,61 @@
   "version": "1.0.0",
   "author": "bart",
   "description": "Now playing with a source icon, framed like the X1 resources card",
-  "kinds": ["bar-widget"],
-  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
   "barWidget": {
     "displayName": "Media",
     "category": "Media",
     "allowMultiple": false,
-    "defaultSection": "left"
+    "defaultSection": "left",
+    "defaults": {
+      "frameStyle": "none",
+      "lensBulge": 4,
+      "lensSpecular": 60
+    },
+    "schema": [
+      {
+        "key": "frameStyle",
+        "type": "enum",
+        "label": "Card frame",
+        "options": [
+          "none",
+          "emboss",
+          "lens",
+          "dome",
+          "bracket",
+          "rail",
+          "chamfer",
+          "inset",
+          "blade",
+          "bloom",
+          "flat"
+        ],
+        "defaultValue": "none",
+        "description": "bracket: machined end caps, no surface. rail: accent bar under the row. chamfer: octagonal cut-corner plate. inset: a well carved into the bar. blade: accent edge left, rounded right. emboss/lens/dome: shaded plate, bead, lozenge. bloom: halo coloured by load. flat: the original bordered rectangle."
+      },
+      {
+        "key": "lensBulge",
+        "type": "integer",
+        "label": "Lens shoulder (px)",
+        "min": 2,
+        "max": 12,
+        "defaultValue": 4,
+        "description": "Width of the domed edge. Larger reads rounder, smaller reads sharper."
+      },
+      {
+        "key": "lensSpecular",
+        "type": "integer",
+        "label": "Lens highlight (%)",
+        "min": 0,
+        "max": 150,
+        "defaultValue": 60,
+        "description": "Strength of the specular hotspot on the dome."
+      }
+    ]
   }
 }

@@ -3,11 +3,12 @@ import Quickshell.Io
 import qs.Commons
 import qs.Ui
 
-// X1 resources cluster: a framed card holding CPU / RAM / temp / disk cells
-// with hairline separators. Each icon is tinted by its usage level; values,
-// levels, and the level colors all come from x1-bar-stats so the palette
-// always follows the active theme. Left click opens the detail panel,
-// right click jumps straight to btop.
+// X1 resources cluster: CPU / RAM / temp / disk cells split by cell dividers.
+// Frameless by default — the dividers carry the structure on their own, and
+// the "bars" divider doubles as a live aggregate-load meter. Each icon is
+// tinted by its usage level; values, levels, and the level colors all come
+// from x1-bar-stats so the palette always follows the active theme. Left
+// click opens the detail panel, right click jumps straight to btop.
 
 BarWidget {
   id: root
@@ -19,8 +20,44 @@ BarWidget {
   // every stock widget uses — the card recolors with the bar.
   readonly property color lineColor: bar ? bar.barForeground : "white"
 
+  // Aggregate state, used by the bloom frame's halo and the bars divider.
+  // Temp and disk are deliberately left out of the intensity — one is not a
+  // percentage, the other barely moves, so neither says anything about
+  // "right now".
+  readonly property int worstLevel: stats
+    ? Math.max(stats.cpu.l, stats.mem.l, stats.temp.l, stats.disk.l) : 0
+  readonly property real loadFraction: stats
+    ? Math.max(stats.cpu.v, stats.mem.v) / 100 : 0
+
   function pad(v, w) {
     return String(v).padStart(w, " ")
+  }
+
+  // Rolling history for the "spark" readout: oldest to newest, one sample per
+  // stats tick. Reassigned wholesale rather than mutated in place, because a
+  // push into an existing array does not notify QML bindings.
+  readonly property int historyLen: 24
+  property var history: ({ cpu: [], mem: [], temp: [], disk: [] })
+
+  // Temperature is degrees, not a percentage. Map the span the thresholds
+  // actually care about (warn 55, crit 78) onto 0..1 so every cell's meter
+  // means the same thing.
+  function normalize(key, v) {
+    if (key === "temp") return Math.max(0, Math.min(1, (v - 35) / 60))
+    return Math.max(0, Math.min(1, v / 100))
+  }
+
+  function recordHistory(s) {
+    var keys = ["cpu", "mem", "temp", "disk"]
+    var next = {}
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i]
+      var a = (root.history[k] || []).slice()
+      a.push(root.normalize(k, s[k].v))
+      if (a.length > root.historyLen) a.shift()
+      next[k] = a
+    }
+    root.history = next
   }
 
   function injectPanel() {
@@ -76,6 +113,7 @@ BarWidget {
         if (!raw) return
         try {
           root.stats = JSON.parse(raw.split("\n").pop())
+          root.recordHistory(root.stats)
         } catch (e) {}
       }
     }
@@ -107,6 +145,8 @@ BarWidget {
     property string value
     property int level: 0
     property string section: ""
+    property real fraction: 0
+    property var samples: []
 
     implicitWidth: textRow.implicitWidth
     implicitHeight: root.barSize
@@ -131,6 +171,7 @@ BarWidget {
       spacing: 4
 
       Text {
+        anchors.verticalCenter: parent.verticalCenter
         text: cell.icon
         color: root.levelColors[Math.min(cell.level, 2)]
         font.family: root.bar ? root.bar.fontFamily : "monospace"
@@ -140,34 +181,43 @@ BarWidget {
           ColorAnimation { duration: 160 }
         }
       }
-      Text {
-        text: cell.value
-        color: root.lineColor
-        font.family: root.bar ? root.bar.fontFamily : "monospace"
-        font.pixelSize: root.setting("fontSize", Style.font.body)
+
+      CellReadout {
+        anchors.verticalCenter: parent.verticalCenter
+        readoutStyle: root.setting("readoutStyle", "sparkwide")
+        value: cell.value
+        fraction: cell.fraction
+        history: cell.samples
+        textColor: root.lineColor
+        levelColor: root.levelColors[Math.min(cell.level, 2)]
+        fontFamily: root.bar ? root.bar.fontFamily : "monospace"
+        fontSize: root.setting("fontSize", Style.font.body)
       }
     }
   }
 
-  component CellSeparator: Rectangle {
-    width: 1
-    height: 14
-    anchors.verticalCenter: parent ? parent.verticalCenter : undefined
-    color: Qt.alpha(root.lineColor, 0.12)
+  // With no frame around the cluster these marks are the only structure the
+  // readout has, so they carry the grouping and the identity by themselves.
+  component CellSeparator: CellDivider {
+    dividerStyle: root.setting("dividerStyle", "glitch")
+    lineColor: root.lineColor
+    meterValue: root.loadFraction
+    meterColor: root.levelColors[Math.min(root.worstLevel, 2)]
   }
 
-  // Frame styled like the shell's own in-bar grouped rectangle (the drag
-  // ghost): controls-section fill/border tokens and the theme's Hyprland
-  // rounding, so every variant keeps its own corner identity.
-  Rectangle {
+  // Card frame, switched by the frameStyle setting. Defaults to "none": the
+  // cell dividers are the structure, and a container only crowds them.
+  CardFrame {
     id: frame
     anchors.verticalCenter: parent.verticalCenter
     implicitWidth: row.implicitWidth + 2 * root.setting("framePadding", Style.spacing.controlPaddingX)
     height: parent.height - 2 * Style.space(1)
-    radius: Math.min(Style.cornerRadius, height / 2)
-    color: Style.normalFillFor(root.lineColor, root.lineColor)
-    border.width: Style.normalBorderWidth
-    border.color: Style.normalBorderFor(root.lineColor, root.lineColor)
+    lineColor: root.lineColor
+    frameStyle: root.setting("frameStyle", "none")
+    bulge: Number(root.setting("lensBulge", 4))
+    specular: Number(root.setting("lensSpecular", 60)) / 100
+    glowColor: root.levelColors[Math.min(root.worstLevel, 2)]
+    glowIntensity: root.loadFraction
 
     Row {
       id: row
@@ -180,6 +230,8 @@ BarWidget {
         value: root.stats ? root.pad(root.stats.cpu.v, 3) + "%" : "  -%"
         level: root.stats ? root.stats.cpu.l : 0
         section: "cpu"
+        fraction: root.stats ? root.normalize("cpu", root.stats.cpu.v) : 0
+        samples: root.history.cpu
       }
       CellSeparator {}
       ResourceCell {
@@ -187,6 +239,8 @@ BarWidget {
         value: root.stats ? root.pad(root.stats.mem.v, 3) + "%" : "  -%"
         level: root.stats ? root.stats.mem.l : 0
         section: "mem"
+        fraction: root.stats ? root.normalize("mem", root.stats.mem.v) : 0
+        samples: root.history.mem
       }
       CellSeparator {}
       ResourceCell {
@@ -194,6 +248,8 @@ BarWidget {
         value: root.stats ? root.pad(root.stats.temp.v, 2) + "°" : " -°"
         level: root.stats ? root.stats.temp.l : 0
         section: "temp"
+        fraction: root.stats ? root.normalize("temp", root.stats.temp.v) : 0
+        samples: root.history.temp
       }
       CellSeparator {}
       ResourceCell {
@@ -201,6 +257,8 @@ BarWidget {
         value: root.stats ? root.pad(root.stats.disk.v, 2) + "%" : " -%"
         level: root.stats ? root.stats.disk.l : 0
         section: "disk"
+        fraction: root.stats ? root.normalize("disk", root.stats.disk.v) : 0
+        samples: root.history.disk
       }
     }
 

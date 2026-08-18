@@ -12,7 +12,7 @@ cursor = "#f0f2f5"
 foreground = "#e1e4e8"
 background = "#090b0d"
 selection_foreground = "#f8f9fb"
-selection_background = "#383e46"
+selection_background = "#535c67"
 
 color0 = "#090b0d"
 color1 = "#d12736"
@@ -22,7 +22,7 @@ color4 = "#648fb8"
 color5 = "#a988bd"
 color6 = "#6fa5a7"
 color7 = "#e1e4e8"
-color8 = "#383e46"
+color8 = "#535c67"
 color9 = "#f04f5d"
 color10 = "#a0c2b0"
 color11 = "#e1b073"
@@ -37,8 +37,8 @@ surface_raised = "#21262c"
 
 # lines & emphasis
 muted = "#969ea8"
-border = "#383e46"
-border_soft = "#424953"
+border = "#535c67"
+border_soft = "#5d6674"
 border_gradient = "#648fb8"
 
 # semantic

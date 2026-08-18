@@ -1,0 +1,60 @@
+# X1 Ember — warm graphite with keyboard-backlight amber accents.
+
+# identity / meta
+display_name = "X1 Ember"
+description = "Warm graphite with keyboard-backlight amber accents."
+icons_theme = "Yaru-yellow"
+vscode_name = "Monokai Dimmed"
+
+# colors.toml keys
+accent = "#d9a05b"
+cursor = "#f2eee7"
+foreground = "#e6e2d9"
+background = "#0e0d0b"
+selection_foreground = "#faf8f3"
+selection_background = "#635c4e"
+
+color0 = "#0e0d0b"
+color1 = "#b5453d"
+color2 = "#9bb488"
+color3 = "#ab8a54"
+color4 = "#7d9cc0"
+color5 = "#b394ae"
+color6 = "#7fada6"
+color7 = "#e6e2d9"
+color8 = "#635c4e"
+color9 = "#e0705f"
+color10 = "#b8cca6"
+color11 = "#c9a86e"
+color12 = "#a3bfdc"
+color13 = "#ccb4c6"
+color14 = "#a5cdc5"
+color15 = "#faf8f3"
+
+# surface ramp
+surface = "#191712"
+surface_raised = "#242019"
+
+# lines & emphasis
+muted = "#a49c90"
+border = "#635c4e"
+border_soft = "#6d6456"
+border_gradient = "#7d9cc0"
+
+# semantic
+warning = "#ab8a54"
+critical = "#e0705f"
+
+# background generation knobs
+bg_tint = "#d9a05b"
+weave_hi = "#242019"
+weave_lo = "#0e0d0b"
+
+# shape & glass identity
+bar_alpha = "0.30"
+pill_alpha = "0.85"
+pill_border_alpha = "0.86"
+hypr_rounding = "10"
+hypr_gaps_in = "5"
+hypr_gaps_out = "10"
+hypr_border_size = "2"

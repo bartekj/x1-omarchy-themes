@@ -2,7 +2,7 @@
 # Cycle through the X1 theme family.
 set -euo pipefail
 
-themes=(x1 x1-stealth x1-redline x1-graphite)
+themes=(x1 x1-stealth x1-redline x1-graphite x1-ember)
 f="$HOME/.local/state/omarchy/current/theme.name"
 current="x1"
 [[ -r $f ]] && current="$(<"$f")"

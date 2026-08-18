@@ -44,13 +44,21 @@ if [[ -f $legacy_tpl ]]; then
   echo "retired: $legacy_tpl -> $legacy_tpl.pre-quattro.bak"
 fi
 
+# Warm the theme-picker thumbnail cache: without this, the first picker open
+# after a rebuild hits the lazy-thumbnails path that hands Qt the original
+# preview.png instead of a cached JPEG.
+if command -v omarchy-theme-switcher >/dev/null; then
+  omarchy-theme-switcher --preload
+  echo "warmed: theme-picker thumbnails"
+fi
+
 current=$(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null || true)
 case $current in
-x1 | x1-graphite | x1-redline | x1-stealth)
+x1 | x1-*)
   omarchy-theme-refresh
   echo "OK — refreshed active theme: $current"
   ;;
 *)
-  echo "OK — apply with: omarchy theme set x1-stealth (or x1 / x1-redline / x1-graphite)"
+  echo "OK — apply with: omarchy theme set x1-ember (or x1 / x1-graphite / x1-redline / x1-stealth)"
   ;;
 esac

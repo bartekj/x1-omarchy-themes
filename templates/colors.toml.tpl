@@ -3,7 +3,9 @@ mode = "dark"
 
 accent = "{{ accent }}"
 selection = "{{ selection_background }}"
-muted = "{{ color8 }}"
+# Shell secondary text uses the palette's muted gray (~7:1), not the ANSI
+# dim gray color8 (~2.9:1) — terminals still get color8 via the ANSI ramp.
+muted = "{{ muted }}"
 
 background = "{{ background }}"
 lighter_background = "{{ surface_raised }}"
