@@ -15,7 +15,7 @@ BarWidget {
   moduleName: "bart.resources"
 
   property var stats: null
-  readonly property var levelColors: stats && stats.colors ? stats.colors : ["#7fbf7f", "#d19a66", "#e06c75"]
+  readonly property var levelColors: stats && stats.colors ? stats.colors : ["#9199a3", "#d9dde3", "#e06c75"]
   // barForeground (not foreground): the animated, transparency-aware color
   // every stock widget uses — the card recolors with the bar.
   readonly property color lineColor: bar ? bar.barForeground : "white"
@@ -184,10 +184,11 @@ BarWidget {
 
       CellReadout {
         anchors.verticalCenter: parent.verticalCenter
-        readoutStyle: root.setting("readoutStyle", "sparkwide")
+        readoutStyle: root.setting("readoutStyle", "columns")
         value: cell.value
         fraction: cell.fraction
         history: cell.samples
+        level: cell.level
         textColor: root.lineColor
         levelColor: root.levelColors[Math.min(cell.level, 2)]
         fontFamily: root.bar ? root.bar.fontFamily : "monospace"
@@ -197,12 +198,10 @@ BarWidget {
   }
 
   // With no frame around the cluster these marks are the only structure the
-  // readout has, so they carry the grouping and the identity by themselves.
+  // readout has. Quiet graphite only — no accent, no live meter.
   component CellSeparator: CellDivider {
-    dividerStyle: root.setting("dividerStyle", "glitch")
+    dividerStyle: root.setting("dividerStyle", "hairline")
     lineColor: root.lineColor
-    meterValue: root.loadFraction
-    meterColor: root.levelColors[Math.min(root.worstLevel, 2)]
   }
 
   // Card frame, switched by the frameStyle setting. Defaults to "none": the

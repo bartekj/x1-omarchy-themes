@@ -21,8 +21,8 @@
       "frameStyle": "none",
       "lensBulge": 4,
       "lensSpecular": 60,
-      "dividerStyle": "glitch",
-      "readoutStyle": "sparkwide"
+      "dividerStyle": "hairline",
+      "readoutStyle": "columns"
     },
     "schema": [
       {
@@ -75,29 +75,23 @@
         "type": "enum",
         "label": "Cell divider",
         "options": [
-          "glitch",
-          "slash",
-          "chevron",
-          "tick",
-          "bars",
-          "hairline"
+          "hairline",
+          "tick"
         ],
-        "defaultValue": "glitch",
-        "description": "slash: double shear with an accent stroke. glitch: the rule broken into offset segments. chevron: a pointed > giving the row direction. tick: HUD I-beam with an accent node. bars: stacked dashes that are a live readout of aggregate load. hairline: the original 1px rule."
+        "defaultValue": "hairline",
+        "description": "hairline: a quiet 1px rule. tick: instrument I-beam with a centre node. Both graphite-only."
       },
       {
         "key": "readoutStyle",
         "type": "enum",
         "label": "Cell readout",
         "options": [
-          "sparkwide",
-          "spark",
+          "columns",
           "meter",
-          "segments",
           "text"
         ],
-        "defaultValue": "sparkwide",
-        "description": "text: the padded number. meter: the number with a progress rule under it. segments: a five-segment LED bar instead of the number. spark: the number over a faint sparkline of recent history. sparkwide: the number, then the sparkline beside it at full contrast."
+        "defaultValue": "columns",
+        "description": "columns: the number plus a mini bar-chart of recent history. meter: the number with a progress rule under it. text: the padded number alone."
       }
     ]
   }
