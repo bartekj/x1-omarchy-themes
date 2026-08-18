@@ -58,6 +58,15 @@ for stale in x1-bar-stats x1-bar-detail; do
   fi
 done
 
+# Old rsync-installed copy (no .git) can't receive updates and its scripts
+# were just retired above — tell the user how to migrate to the plugin repo.
+if [[ -d "$HOME/.config/omarchy/plugins/bart.resources" && ! -d "$HOME/.config/omarchy/plugins/bart.resources/.git" ]]; then
+  echo "NOTE: bart.resources here is the old pre-plugin copy and will show placeholders."
+  echo "      Migrate: rm -rf ~/.config/omarchy/plugins/bart.resources \\"
+  echo "               && omarchy plugin add <path-or-url-of-omarchy-plugin-resources> --yes \\"
+  echo "               && omarchy-restart-shell"
+fi
+
 # Warm the theme-picker thumbnail cache: without this, the first picker open
 # after a rebuild hits the lazy-thumbnails path that hands Qt the original
 # preview.png instead of a cached JPEG.

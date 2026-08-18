@@ -11,8 +11,8 @@ import qs.Commons
 //   bloom  no frame — a halo behind the card, coloured by load
 //   flat   the original hairline-bordered rectangle
 //
-// Source of truth: bar/shared/CardFrame.qml. Copied into each plugin by
-// tools/build-plugin-shared — do not edit the copies.
+// Source of truth: bar/shared/CardFrame.qml. Copied into bart.media by
+// tools/build-plugin-shared — do not edit the copy.
 Item {
   id: root
 
