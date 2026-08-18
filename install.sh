@@ -29,6 +29,12 @@ for script in bar/scripts/x1-*; do
 done
 echo "installed: ~/.config/omarchy/bar/scripts/ ($(basename -a bar/scripts/x1-* | paste -sd' '))"
 
+# This loop only ever ships the plugins that still live in-tree under
+# bar/plugins/ (bart.media, bart.weather). Git-managed plugins installed via
+# `omarchy plugin add` — bart.resources now lives in its own repo, cloned
+# straight into ~/.config/omarchy/plugins/bart.resources — must NEVER be
+# rsynced over: with its directory gone from this repo the glob below simply
+# never matches it, so its git clone is left untouched.
 mkdir -p "$HOME/.config/omarchy/plugins"
 for plugin in bar/plugins/*/; do
   name=$(basename "$plugin")
@@ -43,6 +49,14 @@ if [[ -f $legacy_tpl ]]; then
   mv "$legacy_tpl" "$legacy_tpl.pre-quattro.bak"
   echo "retired: $legacy_tpl -> $legacy_tpl.pre-quattro.bak"
 fi
+
+# bart.resources moved to its own plugin repo; retire the old shared scripts.
+for stale in x1-bar-stats x1-bar-detail; do
+  if [[ -f "$HOME/.config/omarchy/bar/scripts/$stale" ]]; then
+    rm -f "$HOME/.config/omarchy/bar/scripts/$stale"
+    echo "retired: ~/.config/omarchy/bar/scripts/$stale (ships with the bart.resources plugin now)"
+  fi
+done
 
 # Warm the theme-picker thumbnail cache: without this, the first picker open
 # after a rebuild hits the lazy-thumbnails path that hands Qt the original

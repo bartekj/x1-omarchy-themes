@@ -118,71 +118,33 @@ Four layers, one gradient (`accent` -> `accent_dim`, 35deg, from
    interaction (hover/focus) = `accent_dim` @ 0.4/0.45, committed
    (selected) = `accent` @ 0.45. Fill alphas stay near shell defaults.
 
-### Card frames (the two bar cards)
+### Card frames
 
-`bart.resources` and `bart.media` opt out of layer 4 entirely. Both default to
-`frameStyle = "none"` — no container at all — and the resources cluster gets
-its structure from **cell dividers** instead (see below). Three frame styles
-remain available per widget in `shell.json` via `frameStyle`.
+`bart.media` opts out of layer 4 entirely, defaulting to `frameStyle = "none"`
+— no container at all. Three frame styles are available in `shell.json` via
+`frameStyle`.
 
 | Style | What it is |
 |---|---|
-| `none` (default) | Nothing at all; the cell dividers carry the structure |
+| `none` (default) | Nothing at all |
 | `bloom` | No frame at all — a halo behind the card, coloured by load |
 | `flat` | The original hairline-bordered rectangle |
 
-### Cell dividers
-
-With no frame, the marks between the four readouts are the only structure the
-cluster has, so they carry the grouping on their own. Set per widget via
-`dividerStyle` (`bart.resources` only — the media widget is a single label).
-Drawn from primitives, not glyphs, so nothing depends on what the bar font
-ships. Both marks are graphite-only, deliberately — no accent of their own —
-because the readout columns (see below) are the loudest thing in the cluster
-and the dividers must not compete with them.
-
-| Divider | What it is |
-|---|---|
-| `hairline` (default) | The original 1px rule |
-| `tick` | HUD I-beam with a node at its centre |
-
-### Cell readouts
-
-How each cell states its value, set per widget via `readoutStyle`
-(`bart.resources` only).
-
-| Readout | What it is |
-|---|---|
-| `columns` (default) | The number, then a 10-column mini bar-chart of history |
-| `meter` | The number with a progress rule under it |
-| `text` | The padded number, as the cluster has always shown it |
-
-`columns` keeps the digits — a graph alone shows trend but loses the reading,
-and the reading is what you glance for. Each column is 2px wide on an
-absolute 0..1 scale, 12px tall, with a 1px gap to the next; the gap is what
-keeps a steady value reading as an even comb instead of a solid block — the
-failure mode that killed the earlier sparkline readout.
-
-History is not persisted — it starts empty after a shell restart or a config
-reload, and fills over `historyLen` (24) ticks.
-
-Temperature is normalised separately (35-95 °C onto 0..1) because it is not a
-percentage — without that its meter would read as near-empty forever. History
-for `columns` is 24 samples at the poll interval, reassigned wholesale on each
-tick since pushing into an existing array does not notify QML bindings.
-
 `bloom` is QML rather than shader: its halo spills outside the item's bounds
 and takes its colour from live data, neither of which fits a shader clipped
-to the item. On `bart.resources` the halo is the worst resource's level
-colour, burning with `max(cpu, mem)` — the card swells red under load. Temp
-and disk are excluded from the intensity (one is not a percentage, the other
-barely moves). `bart.media` has no load to report, so it gets a steady halo
-in the bar foreground.
+to the item. `bart.media` has no load to report, so it gets a steady halo in
+the bar foreground. (`bart.resources` — see "Bar cockpit" below — uses this
+same style set from its own diverging copy of `CardFrame.qml`, and drives the
+halo's colour from its per-resource load; cell dividers and per-cell readout
+styles, `columns`/`meter`/`text`, are that plugin's design now and documented
+in its own README, not here.)
 
-- **Source of truth is `bar/shared/`.** Quickshell plugins cannot import
-  each other, so `tools/build-plugin-shared` copies `CardFrame.qml` (plus
-  `CellDivider.qml` and `CellReadout.qml` for `bart.resources`) into each
-  plugin directory. Never edit those copies — the next run overwrites them.
+- **`bar/shared/` holds only `CardFrame.qml` now.** Quickshell plugins cannot
+  import each other, so `tools/build-plugin-shared` copies it into
+  `bar/plugins/bart.media`; never edit that copy by hand, the next run
+  overwrites it. `bart.resources` moved to its own plugin repo
+  (`~/Projects/omarchy-plugin-resources`) and carries a diverging copy of
+  `CardFrame.qml`, ported by hand — it is no longer fanned out from here.
 - **The bloom halo is a blurred outline, not a blurred fill.** Blurring a
   filled rect leaves the middle fully coloured, which fogs the readout
   instead of haloing it.
@@ -204,43 +166,15 @@ in the bar foreground.
 
 ## Bar cockpit (Omarchy 4 shell)
 
-`bar/plugins/bart.resources/` is a full third-party shell plugin (installed
-to `~/.config/omarchy/plugins/bart.resources/`, shell.json entry
-`{"id": "bart.resources"}` — no `"type"` key, that would bypass the plugin
-registry). It renders the resource card: CPU / RAM / temp / disk
-cells with hairline separators, each ICON tinted muted/foreground/red by
-usage level (values stay in the bar foreground; no height changes). The card
-is a **card frame** (see below) and binds to `bar.barForeground`, so it
-recolors in transparent-bar mode.
-**Each cell opens its own native KeyboardPanel popup** (like Wi-Fi/volume),
-anchored under the cell that was clicked:
-- **CPU** — usage meter, load average, runnable/threads, temperature, a
-  per-thread grid (cluster-labelled P/E/LP with live MHz), top processes by
-  real CPU delta (not `ps` lifetime average).
-- **Memory** — RAM meter with used/total, available/cached/shared/dirty,
-  zram swap meter, top consumers aggregated per command name.
-- **Temperature** — package meter scaled to the 110 °C throttle point, all
-  12 core sensors, NVMe/Wi-Fi/EC/skin sensors, both fan RPMs and fan level.
-- **Storage** — a meter per filesystem (btrfs subvolumes deduped) and the
-  NVMe model.
-
-Detail data comes from `bar/scripts/x1-bar-detail <section>`, polled at 1s
-**only while a panel is open**; late replies are discarded when the section
-changes. Right click anywhere on the card jumps straight to btop, Enter in an
-open panel does the same. IPC: `omarchy-shell bart.resources
-open|close|toggle`, plus `section cpu|mem|temp|disk` to summon one directly
-(handy for a keybinding). Headline values and level colors come from
-`bar/scripts/x1-bar-stats` (2s tick, always on), which resolves
-muted/foreground/red from the ACTIVE theme via `omarchy-theme-color
-muted|foreground|bright_red` (fallbacks `#9199a3`/`#d9dde3`/`#e06c75`) — the
-cluster idles gray, brightens to foreground on warn, and goes red only at
-critical; accent never appears here. Temperature = mean of all coretemp
-`Core *` sensors (the package DTS swings 20°C+ on boost spikes) smoothed by
-an asymmetric EMA (fast up ½, slow down ⅕; millidegree state file with a 10s
-staleness guard). Thresholds (warn/crit): cpu 30/70, mem 50/80, temp 55/78
-°C, disk 70/90 %. Saving plugin QML reloads the registry but NOT the code —
-the component cache keeps the old version, so editing a widget still needs
-`omarchy-restart-shell` (see Gotchas).
+`bart.resources` — the CPU / RAM / temp / disk cluster — has moved out to its
+own plugin repo, `~/Projects/omarchy-plugin-resources`; it is no longer
+shipped by this repo or touched by its `install.sh`. It's installed live via
+`omarchy plugin add` (a git clone at
+`~/.config/omarchy/plugins/bart.resources/`, shell.json entry
+`{"id": "bart.resources"}`). The cluster is collapsible — a click shrinks it
+to a single ~27px icon and back — and keeps the per-resource detail panels,
+thresholds, and EMA-smoothed temperature this repo originally prototyped.
+See that repo's own README for the full settings/IPC/threshold reference.
 
 Bar transparency: filled graphite glass — `bar_alpha` 0.50, uniform across
 all five variants — is the intended default, so the bar carries visible
@@ -282,10 +216,16 @@ Cockpit gotchas:
   padding inside `"text"`.
 - The only styling class is `"active"` (theme urgent color) — no
   warning/critical tiers.
-- Editing QML of an already-loaded plugin hot-reloads the registry but the
-  QML component cache keeps the OLD code — run `omarchy-restart-shell` to
-  actually load QML changes. (`omarchy-refresh-shell` is a config RESET,
-  not a reload — it overwrites shell.json with the default.)
+- Editing (or `omarchy plugin update`-ing) the QML of an already-loaded
+  plugin hot-reloads the registry but not the code: the shell reuses the
+  bar-widget component it already mounted for that URL, and
+  `Qt.clearComponentCache()` cannot evict a type an instance still
+  references. Hot-reload only picks up brand-new plugins and manifest-only
+  metadata — an already-loaded widget's QML needs `omarchy-restart-shell` to
+  actually take effect, `plugin add`/`plugin update` included. (This is what
+  bit `bart.resources` after it moved to its own git-managed plugin repo.)
+  `omarchy-refresh-shell` is a config RESET, not a reload — it overwrites
+  shell.json with the default.
 
 ## Gotchas learned the hard way
 

@@ -6,22 +6,18 @@
 # against its own directory — so shared components have to exist physically
 # in each plugin. This script is what keeps those copies identical; never
 # edit them by hand.
+#
+# bart.resources moved out to its own plugin repo
+# (~/Projects/omarchy-plugin-resources) and now carries a hand-ported,
+# diverging copy of CardFrame.qml (plus CellDivider/CellReadout, which never
+# existed anywhere but that cluster) — it is no longer fanned out from here.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 FRAME=bar/shared/CardFrame.qml
 FRAME_CONSUMERS=(
-  bar/plugins/bart.resources
   bar/plugins/bart.media
-)
-
-# Only the resources cluster has cells; the media widget is a single
-# label, so it does not get a copy.
-DIVIDER=bar/shared/CellDivider.qml
-READOUT=bar/shared/CellReadout.qml
-CELL_CONSUMERS=(
-  bar/plugins/bart.resources
 )
 
 die() {
@@ -30,20 +26,11 @@ die() {
 }
 
 [[ -f $FRAME ]] || die "missing $FRAME"
-[[ -f $READOUT ]] || die "missing $READOUT"
-[[ -f $DIVIDER ]] || die "missing $DIVIDER"
 
 for plugin in "${FRAME_CONSUMERS[@]}"; do
   [[ -d $plugin ]] || die "missing plugin directory: $plugin"
   cp -- "$FRAME" "$plugin/CardFrame.qml"
   echo "  frame: $plugin"
-done
-
-for plugin in "${CELL_CONSUMERS[@]}"; do
-  [[ -d $plugin ]] || die "missing plugin directory: $plugin"
-  cp -- "$DIVIDER" "$plugin/CellDivider.qml"
-  cp -- "$READOUT" "$plugin/CellReadout.qml"
-  echo "  cells: $plugin"
 done
 
 echo "OK: shared QML fanned out"
