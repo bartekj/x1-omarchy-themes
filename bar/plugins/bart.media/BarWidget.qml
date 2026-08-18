@@ -49,8 +49,6 @@ BarWidget {
     height: parent.height - 2 * Style.space(1)
     lineColor: root.lineColor
     frameStyle: root.setting("frameStyle", "none")
-    bulge: Number(root.setting("lensBulge", 4))
-    specular: Number(root.setting("lensSpecular", 60)) / 100
     glowColor: root.lineColor
     glowIntensity: 0.35
 

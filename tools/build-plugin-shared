@@ -1,26 +1,20 @@
 #!/bin/bash
 #
-# Compile bar/shared/card.frag and fan the card frame out to every plugin
-# that uses it.
+# Fan the shared bar QML out to every plugin that uses it.
 #
 # Quickshell plugins cannot import each other — a plugin's QML resolves only
-# against its own directory — so the shared frame has to exist physically in
-# each plugin. This script is what keeps those copies identical; never edit
-# them by hand.
-#
-# The generated .qsb is committed so a plain ./install.sh works without
-# qt6-shadertools. Only run this when the shader or the frame changes.
+# against its own directory — so shared components have to exist physically
+# in each plugin. This script is what keeps those copies identical; never
+# edit them by hand.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-CONSUMERS=(
+FRAME=bar/shared/CardFrame.qml
+FRAME_CONSUMERS=(
   bar/plugins/bart.resources
   bar/plugins/bart.media
 )
-
-SHADER=bar/shared/card.frag
-FRAME=bar/shared/CardFrame.qml
 
 # Only the resources cluster has cells; the media widget is a single
 # label, so it does not get a copy.
@@ -35,32 +29,21 @@ die() {
   exit 1
 }
 
-QSB="${QSB:-$(command -v qsb || echo /usr/lib/qt6/bin/qsb)}"
-[[ -x $QSB ]] || die "qsb not found (install qt6-shadertools, or set QSB=/path/to/qsb)"
-[[ -f $SHADER ]] || die "missing $SHADER"
 [[ -f $FRAME ]] || die "missing $FRAME"
 [[ -f $READOUT ]] || die "missing $READOUT"
 [[ -f $DIVIDER ]] || die "missing $DIVIDER"
 
-for plugin in "${CONSUMERS[@]}"; do
+for plugin in "${FRAME_CONSUMERS[@]}"; do
   [[ -d $plugin ]] || die "missing plugin directory: $plugin"
-
-  # --qt6 bakes the SPIR-V, GLSL, HLSL and MSL variants Qt Quick expects.
-  "$QSB" --qt6 -o "$plugin/card.frag.qsb" "$SHADER"
   cp -- "$FRAME" "$plugin/CardFrame.qml"
-
-  echo "  shared: $plugin"
+  echo "  frame: $plugin"
 done
 
 for plugin in "${CELL_CONSUMERS[@]}"; do
   [[ -d $plugin ]] || die "missing plugin directory: $plugin"
   cp -- "$DIVIDER" "$plugin/CellDivider.qml"
   cp -- "$READOUT" "$plugin/CellReadout.qml"
-  echo "  cells:   $plugin"
+  echo "  cells: $plugin"
 done
 
-# A uniform whose name does not match a ShaderEffect property is silently
-# bound to zero, so surface the names rather than trusting they still line up.
-names=$("$QSB" -d "${CONSUMERS[0]}/card.frag.qsb" | grep -oP '"name": "\K[^"]+' | sort -u | tr '\n' ' ')
-echo "OK: ${#CONSUMERS[@]} plugin(s) shaded"
-echo "    uniforms: $names"
+echo "OK: shared QML fanned out"

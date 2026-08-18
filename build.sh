@@ -133,15 +133,6 @@ generate_assets() {
 compgen -G 'palettes/*.toml' >/dev/null || die "no palettes found in palettes/"
 compgen -G 'templates/*.tpl' >/dev/null || die "no templates found in templates/"
 
-# Bar plugins ship prebuilt shaders so this build needs no qt6-shadertools;
-# only warn when a source edit has outrun the committed artifact.
-for stale in bar/plugins/*/card.frag.qsb; do
-  [[ -f $stale ]] || continue
-  if [[ bar/shared/card.frag -nt $stale || bar/shared/CardFrame.qml -nt $stale ]]; then
-    echo "build.sh: WARNING: $stale is older than bar/shared/ — run ./tools/build-plugin-shared" >&2
-  fi
-done
-
 for palette in palettes/*.toml; do
   name=$(basename "$palette" .toml)
   out="build/$name"

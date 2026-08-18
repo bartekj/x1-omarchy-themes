@@ -17,9 +17,7 @@
     "allowMultiple": false,
     "defaultSection": "left",
     "defaults": {
-      "frameStyle": "none",
-      "lensBulge": 4,
-      "lensSpecular": 60
+      "frameStyle": "none"
     },
     "schema": [
       {
@@ -28,37 +26,11 @@
         "label": "Card frame",
         "options": [
           "none",
-          "emboss",
-          "lens",
-          "dome",
-          "bracket",
-          "rail",
-          "chamfer",
-          "inset",
-          "blade",
           "bloom",
           "flat"
         ],
         "defaultValue": "none",
-        "description": "bracket: machined end caps, no surface. rail: accent bar under the row. chamfer: octagonal cut-corner plate. inset: a well carved into the bar. blade: accent edge left, rounded right. emboss/lens/dome: shaded plate, bead, lozenge. bloom: halo coloured by load. flat: the original bordered rectangle."
-      },
-      {
-        "key": "lensBulge",
-        "type": "integer",
-        "label": "Lens shoulder (px)",
-        "min": 2,
-        "max": 12,
-        "defaultValue": 4,
-        "description": "Width of the domed edge. Larger reads rounder, smaller reads sharper."
-      },
-      {
-        "key": "lensSpecular",
-        "type": "integer",
-        "label": "Lens highlight (%)",
-        "min": 0,
-        "max": 150,
-        "defaultValue": 60,
-        "description": "Strength of the specular hotspot on the dome."
+        "description": "none: no container at all — the dividers carry the structure. bloom: a halo behind the card, coloured by load. flat: the original bordered rectangle."
       }
     ]
   }
