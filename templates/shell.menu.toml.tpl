@@ -1,5 +1,5 @@
 # {{ display_name }} menu: same card treatment as the launcher — hairline
-# border, selected row echoes the window-border gradient.
+# border, selected row echoes the solid window-border line.
 background                = "{{ surface }}"
 background-alpha          = {{ pill_alpha }}
 text                      = "{{ foreground }}"

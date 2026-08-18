@@ -1,5 +1,5 @@
 # {{ display_name }} tooltip: near-opaque glass so small helper text stays
-# crisp over any content; border echoes the window-border gradient.
+# crisp over any content; border echoes the solid window-border line.
 background       = "{{ surface }}"
 background-alpha = 0.92
 text             = "{{ foreground }}"

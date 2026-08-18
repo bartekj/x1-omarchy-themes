@@ -1,5 +1,5 @@
 # {{ display_name }} launcher: surface card + hairline border; the selected
-# row echoes the window-border gradient (the old walker identity). No font
+# row echoes the solid window-border line (the old walker identity). No font
 # keys — stock sizing wins.
 background                = "{{ surface }}"
 background-alpha          = {{ pill_alpha }}
