@@ -1,5 +1,5 @@
 -- {{ display_name }}: laptop-first visual language — compact and sharp.
-local active_border_color = { colors = { "rgba({{ accent_strip }}dd)", "rgba({{ border_gradient_strip }}dd)" }, angle = 35 }
+local active_border_color = { colors = { "rgba({{ accent_strip }}dd)", "rgba({{ accent_dim_strip }}dd)" }, angle = 35 }
 local inactive_border_color = "rgba({{ border_strip }}88)"
 
 hl.config({

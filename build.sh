@@ -15,7 +15,7 @@ REQUIRED_KEYS=(
   color8 color9 color10 color11 color12 color13 color14 color15
   display_name description icons_theme vscode_name
   surface surface_raised
-  muted border border_soft border_gradient
+  muted border border_soft accent_dim
   warning critical
   bg_tint weave_hi weave_lo
   bar_alpha pill_alpha pill_border_alpha

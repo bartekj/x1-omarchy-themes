@@ -39,7 +39,7 @@ surface_raised = "#242019"
 muted = "#a49c90"
 border = "#635c4e"
 border_soft = "#6d6456"
-border_gradient = "#7d9cc0"
+accent_dim = "#7c5c36"
 
 # semantic
 warning = "#ab8a54"
@@ -51,10 +51,10 @@ weave_hi = "#242019"
 weave_lo = "#0e0d0b"
 
 # shape & glass identity
-bar_alpha = "0.30"
+bar_alpha = "0.50"
 pill_alpha = "0.85"
 pill_border_alpha = "0.86"
-hypr_rounding = "10"
-hypr_gaps_in = "5"
-hypr_gaps_out = "10"
+hypr_rounding = "5"
+hypr_gaps_in = "4"
+hypr_gaps_out = "8"
 hypr_border_size = "2"

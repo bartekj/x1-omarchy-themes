@@ -31,8 +31,9 @@ bright_blue = "{{ color12 }}"
 bright_magenta = "{{ color13 }}"
 bright_cyan = "{{ color14 }}"
 
-# X1 border identity: accent -> border_gradient at dd alpha, 35deg;
-# inactive = hairline border at 88 alpha. Consumed by Omarchy's stock
-# hyprland.lua.tpl and the shell.toml [hyprland] tokens.
-hyprland_active_border = "rgba({{ accent_strip }}dd) rgba({{ border_gradient_strip }}dd) 35deg"
-hyprland_inactive_border = "rgba({{ border_strip }}88)"
+# X1 border identity: accent -> accent_dim at dd alpha, 35deg — the variant's
+# own accent deepened, no foreign hue. Inactive = border at aa alpha (must be
+# clearly visible at a glance, quieter than active). Consumed by Omarchy's
+# stock hyprland.lua.tpl and the shell.toml [hyprland] tokens.
+hyprland_active_border = "rgba({{ accent_strip }}dd) rgba({{ accent_dim_strip }}dd) 35deg"
+hyprland_inactive_border = "rgba({{ border_strip }}aa)"
