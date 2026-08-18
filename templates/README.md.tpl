@@ -2,7 +2,7 @@
 
 {{ description }}
 
-Part of the X1 theme family for Omarchy 4 (X1 / Graphite / Redline / Stealth).
+Part of the X1 theme family for Omarchy 4 (X1 / Graphite / Redline / Stealth / Ember).
 The omarchy-shell bar, launcher, notifications, and lock screen pick up the
 variant's glass identity through `shell.<section>.toml` overrides; window
 borders, gaps, and rounding come from the theme's `hyprland.lua`.
