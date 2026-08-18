@@ -1,5 +1,4 @@
 import QtQuick
-import qs.Commons
 
 // Cell dividers for the resources readout.
 //

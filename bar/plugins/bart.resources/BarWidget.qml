@@ -3,12 +3,12 @@ import Quickshell.Io
 import qs.Commons
 import qs.Ui
 
-// X1 resources cluster: CPU / RAM / temp / disk cells split by cell dividers.
-// Frameless by default — the dividers carry the structure on their own, and
-// the "bars" divider doubles as a live aggregate-load meter. Each icon is
-// tinted by its usage level; values, levels, and the level colors all come
-// from x1-bar-stats so the palette always follows the active theme. Left
-// click opens the detail panel, right click jumps straight to btop.
+// X1 resources cluster: CPU / RAM / temp / disk cells split by quiet hairline
+// dividers. Frameless by default — the dividers carry the structure on their
+// own. Each icon is tinted by its usage level; values, levels, and the level
+// colors all come from x1-bar-stats so the palette always follows the active
+// theme. Left click opens the detail panel, right click jumps straight to
+// btop.
 
 BarWidget {
   id: root
@@ -20,10 +20,9 @@ BarWidget {
   // every stock widget uses — the card recolors with the bar.
   readonly property color lineColor: bar ? bar.barForeground : "white"
 
-  // Aggregate state, used by the bloom frame's halo and the bars divider.
-  // Temp and disk are deliberately left out of the intensity — one is not a
-  // percentage, the other barely moves, so neither says anything about
-  // "right now".
+  // Aggregate state, used by the bloom frame's halo. Temp and disk are
+  // deliberately left out of the intensity — one is not a percentage, the
+  // other barely moves, so neither says anything about "right now".
   readonly property int worstLevel: stats
     ? Math.max(stats.cpu.l, stats.mem.l, stats.temp.l, stats.disk.l) : 0
   readonly property real loadFraction: stats
