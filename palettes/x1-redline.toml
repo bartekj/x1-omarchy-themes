@@ -1,8 +1,8 @@
-# X1 Redline — TrackPoint-forward, clearer red accents, no heavy red borders.
+# X1 Redline — TrackPoint-forward, clearest and most present red in accents and borders.
 
 # identity / meta
 display_name = "X1 Redline"
-description = "TrackPoint-forward variant with clearer red accents, kept out of heavy borders."
+description = "TrackPoint-forward variant with the clearest and most present red in accents and borders."
 icons_theme = "Yaru-red"
 vscode_name = "Red"
 
