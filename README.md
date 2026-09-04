@@ -86,10 +86,10 @@ path.
 Every variant ships the same curated five-piece set, tinted 8% with the
 variant accent so the identity carries without shouting:
 
-1. `1-grain.jpg` — dark pebbled grain, rounded relief.
-2. `2-burlap.jpg` — ultra-coarse burlap, fiber-scale depth.
+1. `1-hessian.jpg` — open coarse hessian grid, deep gaps.
+2. `2-canvas.jpg` — tight uniform canvas weave.
 3. `3-sackcloth.jpg` — heavy sackcloth, raking side light.
-4. `4-twill.jpg` — diagonal twill, sharp ridge highlights.
+4. `4-fiber.jpg` — dense matted fiber, non-woven felt.
 5. `5-weave.jpg` — tight woven fabric, the technical texture.
 
 When `assets/backgrounds/` is empty, `build.sh` falls back to a fully
