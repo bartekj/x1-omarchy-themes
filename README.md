@@ -86,10 +86,10 @@ path.
 Every variant ships the same curated five-piece set, tinted 8% with the
 variant accent so the identity carries without shouting:
 
-1. `1-matte.jpg` — crumpled matte paper, the quietest surface.
-2. `2-rings.jpg` — graphite rings, the structured one.
-3. `3-smoke.jpg` — smoke gradient, the atmospheric one.
-4. `4-swatch.jpg` — charcoal fabric swirl, the organic one.
+1. `1-fog.jpg` — a lone tree swallowed by fog.
+2. `2-pier.jpg` — a pier walking into dark still water.
+3. `3-solitude.jpg` — a lone tree under a heavy sky.
+4. `4-vast.jpg` — a tiny figure before a vast landscape.
 5. `5-weave.jpg` — tight woven fabric, the technical texture.
 
 When `assets/backgrounds/` is empty, `build.sh` falls back to a fully
