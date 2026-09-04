@@ -83,12 +83,14 @@ path.
 
 ## Signature wallpapers
 
-Every variant ships the same curated three-piece set, tinted 8% with the
+Every variant ships the same curated five-piece set, tinted 8% with the
 variant accent so the identity carries without shouting:
 
-1. `1-plate.jpg` — brushed graphite plate, directional matte sheen.
-2. `2-stone.jpg` — smooth matte stone, the quietest of the three.
-3. `3-weave.jpg` — tight woven fabric, the technical texture.
+1. `1-matte.jpg` — crumpled matte paper, the quietest surface.
+2. `2-rings.jpg` — graphite rings, the structured one.
+3. `3-smoke.jpg` — smoke gradient, the atmospheric one.
+4. `4-swatch.jpg` — charcoal fabric swirl, the organic one.
+5. `5-weave.jpg` — tight woven fabric, the technical texture.
 
 When `assets/backgrounds/` is empty, `build.sh` falls back to a fully
 procedural set (accent-fiber carbon weave, a knurled TrackPoint dot, and the
