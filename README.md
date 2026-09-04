@@ -1,6 +1,6 @@
 # X1 theme family for Omarchy
 
-Five dark ThinkPad-inspired variants — a mono-graphite base plus one accent
+Seven dark ThinkPad-inspired variants — a mono-graphite base plus one accent
 per variant — generated from a single source of truth. Targets **Omarchy 4
 "quattro"** (omarchy-shell + Hyprland Lua config).
 
@@ -11,6 +11,8 @@ per variant — generated from a single source of truth. Targets **Omarchy 4
 | `x1-redline` | TrackPoint-forward, clearer red | `#d12736` |
 | `x1-stealth` | Near-black, neutral accents | `#7d8792` |
 | `x1-ember` | Warm graphite, keyboard-backlight amber | `#d9a05b` |
+| `x1-azure` | Matte graphite, ThinkVantage steel-blue accents | `#5e9ad4` |
+| `x1-moss` | Matte graphite, subdued power-LED green accents | `#58a877` |
 
 ## Layout
 
@@ -40,7 +42,7 @@ build/                    output (gitignored)
 ```bash
 ./build.sh     # render templates + generate wallpapers/previews into build/
 ./install.sh   # copy build/* into ~/.config/omarchy/themes/ (+ refresh if active)
-omarchy theme set x1-stealth   # or x1 / x1-redline / x1-graphite / x1-ember
+omarchy theme set x1-stealth   # or x1 / x1-redline / x1-graphite / x1-ember / x1-azure / x1-moss
 ```
 
 Never edit `~/.config/omarchy/themes/x1*` by hand — edit a palette (or a
@@ -191,7 +193,7 @@ thresholds, and EMA-smoothed temperature this repo originally prototyped.
 See that repo's own README for the full settings/IPC/threshold reference.
 
 Bar transparency: filled graphite glass — `bar_alpha` 0.50, uniform across
-all five variants — is the intended default, so the bar carries visible
+all seven variants — is the intended default, so the bar carries visible
 weight instead of imperceptibly tinting the wallpaper. Double-clicking empty
 center bar space toggles the shell's native `"transparent": true` mode (no
 fill at all, wallpaper-contrast text); the toggle persists into the user's
@@ -199,7 +201,7 @@ shell.json.
 
 `bar/scripts/x1-theme-{status,next}` drive the bar theme switcher
 (`{"type": "command"}` module: click = next variant in the cycle
-x1 -> stealth -> redline -> graphite -> ember, right-click =
+x1 -> stealth -> redline -> graphite -> ember -> azure -> moss, right-click =
 `omarchy-menu summon style.theme`). The shell.json entries live in
 `~/.config/omarchy/shell.json` (user config, NOT installed by install.sh).
 
