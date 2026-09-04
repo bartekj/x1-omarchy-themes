@@ -35,10 +35,11 @@ hex_to_rgb() {
 
 generate_weave() {
   local out="$1"
-  local bg_tint="${P[bg_tint]}" weave_hi="${P[weave_hi]}" weave_lo="${P[weave_lo]}"
+  local bg_tint="${P[bg_tint]}" weave_hi="${P[weave_hi]}" weave_lo="${P[weave_lo]}" accent="${P[accent]}"
 
-  # Procedural carbon-fiber weave: interleaved vertical/horizontal gradient
-  # tiles, faint noise, vignette, and a whisper of the variant tint.
+  # Signature 1: carbon-fiber weave with a single accent fiber crossing at
+  # thirds — the variant's own thread in the cloth. The fiber, the tint wash,
+  # and the window borders all share the accent.
   magick \
     \( -size 24x48 gradient:"${weave_hi}"-"${weave_lo}" \) \
     \( -size 48x24 gradient:"${weave_hi}"-"${weave_lo}" -rotate 90 \) \
@@ -49,20 +50,45 @@ generate_weave() {
     -compose multiply -composite \
     \( -size 2560x1600 xc:"${bg_tint}" -alpha set -channel A -evaluate set 4% +channel \) \
     -compose over -composite \
-    "$out/backgrounds/1-carbon-weave.png"
+    \( -size 2560x1600 xc:none -stroke "${accent}55" -strokewidth 3 \
+       -draw "line 960,0 960,1600" -draw "line 0,800 2560,800" -blur 0x0.6 \) \
+    -compose over -composite \
+    "$out/backgrounds/1-carbon-weave.jpg"
 }
+
+generate_trackpoint() {
+  local out="$1"
+  local bg_tint="${P[bg_tint]}" accent="${P[accent]}" surface="${P[surface]}" background="${P[background]}"
+  local raised="${P[surface_raised]}" color8="${P[color8]}"
+
+  magick -size 2560x1600 gradient:"${surface}"-"${background}" \
+    -attenuate 0.12 +noise Gaussian -blur 0x0.4 \
+    \( -size 2560x1600 radial-gradient:'rgba(200,200,200,1)'-'rgba(10,10,10,1)' \) \
+    -compose multiply -composite \
+    \( -size 640x640 xc:none -fill "${raised}" -draw "circle 320,320 320,16" \) \
+    -gravity center -compose over -composite \
+    \( -size 640x640 xc:none -fill none -stroke "${color8}" -strokewidth 8 \
+       -draw "circle 320,320 320,216" -draw "circle 320,320 320,160" -draw "circle 320,320 320,104" \
+       -blur 0x1.6 \) -compose over -composite \
+    \( -size 640x640 xc:none -fill none -stroke "${accent}" -strokewidth 16 \
+       -draw "circle 320,320 320,24" -blur 0x5 \) -compose over -composite \
+    \( -size 2560x1600 xc:"${bg_tint}" -alpha set -channel A -evaluate set 3% +channel \) \
+    -compose over -composite \
+    "$out/backgrounds/2-trackpoint.jpg"
+}
+
 
 generate_heritage() {
   local out="$1"
   local bg_tint="${P[bg_tint]}"
 
-  # Heritage: the shared original wallpaper, rescaled and tinted per variant.
+  # Signature 3: the shared original wallpaper, rescaled and tinted.
   magick assets/source/BG1.png \
     -resize 2560x1600^ -gravity center -extent 2560x1600 \
     -modulate 100,85 \
     \( +clone -fill "${bg_tint}" -colorize 100 \) \
     -compose blend -define compose:args=12x88 -composite \
-    "$out/backgrounds/2-heritage.png"
+    "$out/backgrounds/3-heritage.jpg"
 }
 
 populate_backgrounds() {
@@ -92,6 +118,7 @@ populate_backgrounds() {
 
   if ((!copied)); then
     generate_weave "$out"
+    generate_trackpoint "$out"
     generate_heritage "$out"
   fi
 }
@@ -123,8 +150,11 @@ generate_assets() {
   # 4) Plymouth unlock glyph + its picker preview.
   local font
   font=$(fc-match -f '%{file}' 'JetBrainsMono Nerd Font:bold')
-  magick -size 512x512 xc:none -gravity center \
-    -font "$font" -pointsize 220 -fill "${foreground}" -annotate 0 'X1' \
+  magick -size 512x512 xc:none \
+    \( -size 512x512 xc:none -stroke "${accent}" -strokewidth 5 \
+       -draw "circle 256,256 256,196" -blur 0x2 \) \
+    -compose over -composite \
+    -gravity center -font "$font" -pointsize 220 -fill "${foreground}" -annotate 0 'X1' \
     -depth 8 "$out/unlock.png"
   magick "$out/unlock.png" -background "${background}" -flatten -depth 8 "$out/preview-unlock.png"
 }

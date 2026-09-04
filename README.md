@@ -81,6 +81,20 @@ with `-depth 8`, and install.sh warms the thumbnail cache via
 `omarchy-theme-switcher --preload` so the first open never hits the lazy
 path.
 
+## Signature wallpapers
+
+Every variant ships a three-piece generated set — no stock photography:
+
+1. `1-carbon-weave.jpg` — procedural carbon-fiber weave with a single accent
+   fiber crossing at thirds.
+2. `2-trackpoint.jpg` — the TrackPoint: a knurled dot under a top spotlight,
+   quiet accent rim.
+3. `3-heritage.jpg` — the shared original photo, tinted per variant.
+
+The fiber, the rims, and the tint washes all use the palette accent, so the
+wallpapers and the window borders share one identity per variant. Output is
+JPEG 2560x1600 — PNG would be ~40 MB per variant at this noise level.
+
 ## Custom wallpapers
 
 Two routes:
@@ -90,7 +104,7 @@ Two routes:
   sorted before the theme's own backgrounds.
 - **Route B (versioned):** drop images into `assets/backgrounds/<variant>/`
   (or `assets/backgrounds/all/` for every variant). `./build.sh` then ships
-  them **instead of** the generated carbon-weave/heritage set.
+  them **instead of** the signature set.
 
 ## Token contract (Omarchy 4)
 
