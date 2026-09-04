@@ -82,6 +82,6 @@ x1 | x1-*)
   echo "OK — refreshed active theme: $current"
   ;;
 *)
-  echo "OK — apply with: omarchy theme set x1-ember (or x1 / x1-graphite / x1-redline / x1-stealth)"
+  echo "OK — apply with: omarchy theme set x1-ember (or x1 / x1-graphite / x1-redline / x1-stealth / x1-azure / x1-moss)"
   ;;
 esac

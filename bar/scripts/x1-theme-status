@@ -12,6 +12,8 @@ x1-stealth) label="Stealth" ;;
 x1-redline) label="Redline" ;;
 x1-graphite) label="Graphite" ;;
 x1-ember) label="Ember" ;;
+x1-azure) label="Azure" ;;
+x1-moss) label="Moss" ;;
 *) label="$theme" ;;
 esac
 printf '{"text":"󰔎 %s","tooltip":"X1 theme: %s\\nClick: next variant\\nRight-click: theme menu"}\n' "$label" "$label"
