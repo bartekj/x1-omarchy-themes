@@ -1,0 +1,61 @@
+# X1 Azure — matte graphite with ThinkVantage steel-blue accents.
+
+# identity / meta
+display_name = "X1 Azure"
+description = "Matte graphite with ThinkVantage steel-blue active states."
+icons_theme = "Yaru-blue"
+vscode_name = "Tomorrow Night Blue"
+
+# colors.toml keys
+accent = "#5e9ad4"
+cursor = "#e6e9ed"
+foreground = "#d9dde3"
+background = "#0b0d0f"
+selection_foreground = "#f6f7f9"
+selection_background = "#535d69"
+
+color0 = "#0b0d0f"
+color1 = "#c82031"
+color2 = "#83a598"
+color3 = "#d19a66"
+color4 = "#4f83b4"
+color5 = "#a78bba"
+color6 = "#6fa3a8"
+color7 = "#d9dde3"
+color8 = "#535d69"
+color9 = "#ef4f5f"
+color10 = "#9fc3b4"
+color11 = "#e2b27a"
+color12 = "#85b4dc"
+color13 = "#c6b0d7"
+color14 = "#9ac0c4"
+color15 = "#f6f7f9"
+
+# surface ramp
+surface = "#15191d"
+surface_raised = "#20262c"
+
+# lines & emphasis
+muted = "#9199a3"
+border = "#535d69"
+border_soft = "#5a6472"
+window_border_inactive = "#565a60"
+accent_dim = "#274a63"
+
+# semantic
+warning = "#d19a66"
+critical = "#ef4f5f"
+
+# background generation knobs
+bg_tint = "#5e9ad4"
+weave_hi = "#20262c"
+weave_lo = "#0b0d0f"
+
+# shape & glass identity
+bar_alpha = "0.50"
+pill_alpha = "0.85"
+pill_border_alpha = "0.86"
+hypr_rounding = "5"
+hypr_gaps_in = "4"
+hypr_gaps_out = "8"
+hypr_border_size = "2"
