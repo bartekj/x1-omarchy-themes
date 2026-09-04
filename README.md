@@ -83,17 +83,18 @@ path.
 
 ## Signature wallpapers
 
-Every variant ships a three-piece generated set — no stock photography:
+Every variant ships the same curated three-piece set, tinted 8% with the
+variant accent so the identity carries without shouting:
 
-1. `1-carbon-weave.jpg` — procedural carbon-fiber weave with a single accent
-   fiber crossing at thirds.
-2. `2-trackpoint.jpg` — the TrackPoint: a knurled dot under a top spotlight,
-   quiet accent rim.
-3. `3-heritage.jpg` — the shared original photo, tinted per variant.
+1. `1-plate.jpg` — brushed graphite plate, directional matte sheen.
+2. `2-stone.jpg` — smooth matte stone, the quietest of the three.
+3. `3-weave.jpg` — tight woven fabric, the technical texture.
 
-The fiber, the rims, and the tint washes all use the palette accent, so the
-wallpapers and the window borders share one identity per variant. Output is
-JPEG 2560x1600 — PNG would be ~40 MB per variant at this noise level.
+When `assets/backgrounds/` is empty, `build.sh` falls back to a fully
+procedural set (accent-fiber carbon weave, a knurled TrackPoint dot, and the
+tinted heritage photo) — see `generate_weave` / `generate_trackpoint` /
+`generate_heritage` in build.sh. The unlock glyph keeps its accent ring in
+both cases.
 
 ## Custom wallpapers
 
