@@ -8,6 +8,8 @@ per variant — generated from a single source of truth. Targets **Omarchy 4
 
 ![Live desktop: bar, btop, fastfetch, Claude Code, palette preview](docs/screenshots/hero.jpg)
 
+![Theme picker: the X1 family in Omarchy's style menu](docs/screenshots/theme-picker.jpg)
+
 ## Install (any Omarchy 4 machine)
 
 ```bash
