@@ -83,14 +83,19 @@ path.
 
 ## Signature wallpapers
 
-Every variant ships the same curated five-piece set, tinted 8% with the
+Every variant ships the same curated ten-piece set, tinted 8% with the
 variant accent so the identity carries without shouting:
 
-1. `1-hessian.jpg` — open coarse hessian grid, deep gaps.
-2. `2-canvas.jpg` — tight uniform canvas weave.
-3. `3-sackcloth.jpg` — heavy sackcloth, raking side light.
-4. `4-fiber.jpg` — dense matted fiber, non-woven felt.
-5. `5-weave.jpg` — tight woven fabric, the technical texture.
+1. `01-hessian.jpg` — open coarse hessian grid, deep gaps.
+2. `02-canvas.jpg` — tight uniform canvas weave.
+3. `03-sackcloth.jpg` — heavy sackcloth, raking side light.
+4. `04-fiber.jpg` — dense matted fiber, non-woven felt.
+5. `05-weave.jpg` — tight woven fabric, the technical texture.
+6. `06-jute.jpg` — heavy jute drape, warm folds.
+7. `07-sand.jpg` — fine granular grain, near-monochrome.
+8. `08-poplin.jpg` — fine crisp weave, cool grey.
+9. `09-lattice.jpg` — open lattice weave, muted violet.
+10. `10-knit.jpg` — dark cable knit, interlocked loops.
 
 When `assets/backgrounds/` is empty, `build.sh` falls back to a fully
 procedural set (accent-fiber carbon weave, a knurled TrackPoint dot, and the
