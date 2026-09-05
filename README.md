@@ -6,9 +6,7 @@ per variant — generated from a single source of truth. Targets **Omarchy 4
 
 ![X1 family: all seven variants](preview.png)
 
-![Live desktop: bar, btop, fastfetch, Claude Code, palette preview](docs/screenshots/hero.jpg)
-
-![Theme picker: the X1 family in Omarchy's style menu](docs/screenshots/theme-picker.jpg)
+![Live desktop: bar, btop, Claude Code, fastfetch, palette preview](docs/screenshots/hero.png)
 
 ## Install (any Omarchy 4 machine)
 
