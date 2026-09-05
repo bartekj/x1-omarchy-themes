@@ -86,16 +86,16 @@ path.
 Every variant ships the same curated ten-piece set, tinted 8% with the
 variant accent so the identity carries without shouting:
 
-1. `01-hessian.jpg` — open coarse hessian grid, deep gaps.
-2. `02-canvas.jpg` — tight uniform canvas weave.
-3. `03-sackcloth.jpg` — heavy sackcloth, raking side light.
-4. `04-fiber.jpg` — dense matted fiber, non-woven felt.
-5. `05-weave.jpg` — tight woven fabric, the technical texture.
-6. `06-jute.jpg` — heavy jute drape, warm folds.
-7. `07-sand.jpg` — fine granular grain, near-monochrome.
-8. `08-poplin.jpg` — fine crisp weave, cool grey.
-9. `09-lattice.jpg` — open lattice weave, muted violet.
-10. `10-knit.jpg` — dark cable knit, interlocked loops.
+1. `01-moon.jpg` — full moon photography, crater detail.
+2. `02-moonrise.jpg` — moon over layered ridges, near-monochrome.
+3. `03-liftoff.jpg` — NASA launch punching through cloud.
+4. `04-ascent.jpg` — minimal rocket ascent, sunset glow.
+5. `05-horizon.jpg` — planetary horizon, wide space art.
+6. `06-station.jpg` — orbital station, cinematic still.
+7. `07-nebula.jpg` — deep cyan nebula on black.
+8. `08-neptune.jpg` — ringed blue planet, minimal.
+9. `09-milkyway.jpg` — Milky Way over a glacier, low light.
+10. `10-linux.jpg` — monochrome Linux cheat sheet.
 
 When `assets/backgrounds/` is empty, `build.sh` falls back to a fully
 procedural set (accent-fiber carbon weave, a knurled TrackPoint dot, and the
